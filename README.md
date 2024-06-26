@@ -1,6 +1,6 @@
-# StatusPostWeb
+# A Simple Status Post Web
 
-This template should help get you started developing with Vue 3 in Vite.
+This file should help get you started running this repo with Vue 3 in Vite.
 
 ## Recommended IDE Setup
 
