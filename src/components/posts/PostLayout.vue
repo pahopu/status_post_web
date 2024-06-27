@@ -55,25 +55,30 @@
       </div>
       <div class="flex items-center justify-between mt-4 select-none">
         <p class="text-gray-500 text-left">{{ props.postComments.length }} comments</p>
-        <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">
-          View Detail
-        </button>
+        <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">View Detail</button>
       </div>
       <div class="mt-4 border-t border-gray-300" v-if="isDetail">
-        <post-comment-input :postId="props.postId"></post-comment-input>
+        <post-comment-input
+          :userAvatar="getUser(userrId).avt"
+          :userId="userrId"
+          :postId="props.postId"
+          @comment-post="addComment"
+        ></post-comment-input>
         <div v-if="props.postComments.length">
           <post-comment
-          v-for="comment in props.postComments"
-          :key="comment.id"
-          :commentId="comment.id"
-          :userName="getUser(comment.userId).name"
-          :userAvatar="getUser(comment.userId).avt"
-          :commentContent="comment.content"
-          :commentTime="timeAgo(comment.time)"
-          :currentUserId="userrId"
-          :commentUserId="comment.userId"
-          class="mt-5"
-        ></post-comment>
+            v-for="comment in props.postComments"
+            :key="comment.id"
+            :commentId="comment.id"
+            :userName="getUser(comment.userId).name"
+            :userAvatar="getUser(comment.userId).avt"
+            :commentContent="comment.content"
+            :commentTime="timeAgo(comment.time)"
+            :currentUserId="userrId"
+            :commentUserId="comment.userId"
+            @update-comment="updateComment"
+            @delete-comment="deleteComment"
+            class="mt-5"
+          ></post-comment>
         </div>
         <div v-else>
           <p class="text-center text-xl font-medium pt-4">No comments yet!</p>
@@ -185,5 +190,17 @@ const timeAgo = (timeStamp) => {
 
 const getUser = (userId) => {
   return usersStore.getUserById(userId)
+}
+
+const addComment = (comment) => {
+  postsStore.addComment(props.postId, comment)
+}
+
+const updateComment = (newComment) => {
+  postsStore.updateComment(props.postId, newComment.id, newComment.content)
+}
+
+const deleteComment = (commentId) => {
+  postsStore.deleteComment(props.postId, commentId)
 }
 </script>

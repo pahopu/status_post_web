@@ -1,52 +1,20 @@
 <template>
-  <div class="flex items-center space-x-4 mt-5">
-    <img
-      class="w-10 h-10 rounded-full"
-      :src="avt"
-      alt="avatar"
-    />
-    <div class="flex-1">
+  <div class="flex space-x-4 mt-5">
+    <user-avt :avt="props.userAvatar" :id="props.userId"></user-avt>
+    <div class="flex-1 relative">
       <textarea
         ref="textarea"
         v-model="content"
-        @input="autoResize"
-        class="w-full p-2 border rounded-xl"
-        rows="1"
+        class="w-full h-full p-4 rounded-2xl resize-none outline-none bg-gray-200 placeholder:text-gray-500"
         placeholder="Add a comment..."
       ></textarea>
-      <div class="flex items-center justify-between mt-2">
-        <input
-          type="file"
-          @change="getImageUrl($event.target.files[0])"
-          class="hidden"
-          ref="fileInput"
-        />
-        <button
-          @click="$refs.fileInput.click()"
-          class="text-gray-500 hover:text-gray-700"
+      <button @click="post" class="absolute right-2 top-1/2 -translate-y-1/2 transform">
+        <div
+          class="flex items-center justify-center hover:bg-gray-100 cursor-pointer w-10 h-10 rounded-full"
         >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            ></path>
-          </svg>
-        </button>
-        <button
-          @click="post"
-          class="px-4 py-2 text-white bg-blue-500 rounded-xl"
-        >
-          Post
-        </button>
-      </div>
+          <svg-icon name="send" height="24" width="24"></svg-icon>
+        </div>
+      </button>
     </div>
   </div>
 </template>
@@ -54,28 +22,38 @@
 <script setup>
 import { ref } from 'vue'
 
-const content = ref('')
-const autoResize = () => {
-  const textarea = $refs.textarea
-  textarea.style.height = 'auto'
-  textarea.style.height = `${textarea.scrollHeight}px`
-}
+import { usePostsStore } from '../../stores/posts'
 
-const getImageUrl = (file) => {
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    content.value = e.target.result
+const postsStore = usePostsStore()
+
+const props = defineProps({
+  userId: {
+    type: String,
+    required: true
+  },
+  userAvatar: {
+    type: String,
+    required: true
+  },
+  postId: {
+    type: String,
+    required: true
   }
-  reader.readAsDataURL(file)
-}
+})
 
+const content = ref('')
+
+const emits = defineEmits(['comment-post'])
 const post = () => {
   if (!content.value) return
   const myComment = {
+    id: postsStore.currCommentId(props.postId),
+    userId: props.userId,
     content: content.value,
-    image: null
+    time: new Date().toISOString()
   }
   content.value = ''
-  $emit('post', myComment)
+  console.log(myComment)
+  emits('comment-post', myComment)
 }
 </script>

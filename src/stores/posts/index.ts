@@ -75,6 +75,12 @@ export const usePostsStore = defineStore('posts', () => {
   ])
   const currId = computed(() => `p${posts.length + 1}`)
 
+  const currCommentId = (postId) => {
+    const post = posts.find((post) => post.id === postId)
+    const commentNumber = post.comments.length + 1
+    return `c${postId.slice(1)}_${commentNumber}`
+  }
+
   const addPost = (post) => {
     posts.unshift(post)
   }
@@ -90,8 +96,21 @@ export const usePostsStore = defineStore('posts', () => {
   }
 
   const addComment = (postId, comment) => {
-    const post = posts.find((post) => post.postId === postId)
-    post.comments.push(comment)
+    const post = posts.find((post) => post.id === postId)
+    post.comments.unshift(comment)
+  }
+
+  const updateComment = (postId, commentId, newContent) => {
+    const post = posts.find((post) => post.id === postId)
+    const comment = post.comments.find((comment) => (comment.id = commentId))
+    comment.content = newContent
+    console.log(posts)
+  }
+
+  const deleteComment = (postId, commentId) => {
+    const post = posts.find((post) => post.id === postId)
+    const index = post.comments.findIndex((comment) => comment.id === commentId)
+    post.comments.splice(index, 1)
   }
 
   const getPostsByUserId = (userId) => {
@@ -110,6 +129,9 @@ export const usePostsStore = defineStore('posts', () => {
     togglePost,
     addComment,
     getPostsByUserId,
-    getPost
+    getPost,
+    currCommentId,
+    updateComment,
+    deleteComment
   }
 })
