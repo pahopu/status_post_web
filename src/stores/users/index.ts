@@ -33,7 +33,7 @@ export const useUsersStore = defineStore('users', () => {
       birthday: '1995-03-15',
       birthPlace: 'Los Angeles, USA',
       currentPlace: 'Los Angeles, USA',
-      avt: 'src/assets/imgs/Sqrt_Avt.jpg',
+      avt: 'https://hips.hearstapps.com/hmg-prod/images/gettyimages-1769089488-654b617730709.jpg?crop=1.00xw:0.667xh;0,0.0885xh&resize=1200:*',
       cover: 'src/assets/imgs/Cover.png',
       email: 'emilyclark@gmail.com'
     },
@@ -44,7 +44,7 @@ export const useUsersStore = defineStore('users', () => {
       birthday: '2005-12-25',
       birthPlace: 'Beijing, China',
       currentPlace: 'Beijing, China',
-      avt: 'src/assets/imgs/Sqrt_Avt.jpg',
+      avt: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3Lyfxzjt955kvW2CgET3rx3WAv6_1PujV6g&s',
       cover: 'src/assets/imgs/Cover.png',
       email: 'davidwang@gmail.com'
     },
@@ -55,7 +55,7 @@ export const useUsersStore = defineStore('users', () => {
       birthday: '1998-09-30',
       birthPlace: 'Seoul, Korea',
       currentPlace: 'Seoul, Korea',
-      avt: 'src/assets/imgs/Sqrt_Avt.jpg',
+      avt: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJnCrXGp-26R_JfPFmr1TWuPIu2RX3H2LWDA&s',
       cover: 'src/assets/imgs/Cover.png',
       email: 'sarahlee@gmail.com'
     },
@@ -66,7 +66,7 @@ export const useUsersStore = defineStore('users', () => {
       birthday: '2000-04-20',
       birthPlace: 'London, England',
       currentPlace: 'London, England',
-      avt: 'src/assets/imgs/Sqrt_Avt.jpg',
+      avt: 'https://e-cdn-images.dzcdn.net/images/artist/086f50bb1ce0e3033634e5e9c2d75462/500x500-000000-80-0-0.jpg',
       cover: 'src/assets/imgs/Cover.png',
       email: 'johnsmith@gmail.com'
     }

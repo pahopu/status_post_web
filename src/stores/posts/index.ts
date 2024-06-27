@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = reactive([
     {
-      id: 'p1',
+      id: 'p3',
       userId: 'u1',
       content:
         'Had a great time hiking this weekend! The view from the top was breathtaking.\n#nature #hiking',
@@ -13,13 +13,13 @@ export const usePostsStore = defineStore('posts', () => {
       hidden: false,
       comments: [
         {
-          id: 'c1_2',
+          id: 'c3_2',
           userId: 'u3',
           content: 'Wow, I wish I could join you next time!',
           time: '2024-06-21T11:15:00+07:00'
         },
         {
-          id: 'c1_1',
+          id: 'c3_1',
           userId: 'u6',
           content: 'Looks amazing! Where did you go?',
           time: '2024-06-21T11:00:00+07:00'
@@ -44,7 +44,7 @@ export const usePostsStore = defineStore('posts', () => {
       ]
     },
     {
-      id: 'p3',
+      id: 'p1',
       userId: 'u1',
       content:
         'Just tried a new recipe and it turned out delicious! Here is the recipe if anyone is interested.\n#cooking #recipe',
@@ -53,19 +53,19 @@ export const usePostsStore = defineStore('posts', () => {
       hidden: false,
       comments: [
         {
-          id: 'c3_3',
+          id: 'c1_3',
           userId: 'u5',
           content: 'Yum! I will definitely be making this soon.',
           time: '2024-06-11T08:00:00+07:00'
         },
         {
-          id: 'c3_2',
+          id: 'c1_2',
           userId: 'u3',
           content: "Looks delicious! Can't wait to try it.",
           time: '2024-06-10T23:45:00+07:00'
         },
         {
-          id: 'c3_1',
+          id: 'c1_1',
           userId: 'u2',
           content: 'I love trying new recipes. Please share the recipe!',
           time: '2024-06-10T21:30:00+07:00'
@@ -73,6 +73,7 @@ export const usePostsStore = defineStore('posts', () => {
       ]
     }
   ])
+  const currId = computed(() => `p${posts.length + 1}`)
 
   const addPost = (post) => {
     posts.unshift(post)
@@ -97,12 +98,18 @@ export const usePostsStore = defineStore('posts', () => {
     return posts.filter((post) => post.userId === userId)
   }
 
+  const getPost = (postId) => {
+    return posts.find((post) => post.id === postId)
+  }
+
   return {
     posts,
+    currId,
     addPost,
     deletePost,
     togglePost,
     addComment,
-    getPostsByUserId
+    getPostsByUserId,
+    getPost
   }
 })
