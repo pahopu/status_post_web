@@ -23,7 +23,7 @@ const router = useRouter()
 
 const goToProfile = () => {
   if (userId.value === props.id) {
-    router.replace('/myprofile')
+    router.replace('/my-profile')
   } else {
     router.replace(`/profile/${props.id}`)
   }

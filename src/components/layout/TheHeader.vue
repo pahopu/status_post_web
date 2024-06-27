@@ -13,7 +13,7 @@
           <router-link to="/feed">News Feed</router-link>
         </li>
         <li>
-          <router-link to="/myposts">My Posts</router-link>
+          <router-link to="/my-posts">My Posts</router-link>
         </li>
       </ul>
       <base-dropdown></base-dropdown>

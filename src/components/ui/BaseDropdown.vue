@@ -23,7 +23,7 @@
           <span class="block text-sm text-gray-500 truncate">{{ user.email }}</span>
         </div>
         <div class="py-1">
-          <dropdown-button link to="/myprofile" @click="toggleMenu">My profile</dropdown-button>
+          <dropdown-button link to="/my-profile" @click="toggleMenu">My profile</dropdown-button>
           <dropdown-button @click="logOut">Log out</dropdown-button>
         </div>
       </div>
@@ -53,7 +53,7 @@ const toggleMenu = () => {
 }
 
 const logOut = () => {
-  router.replace('/login')
+  router.replace('/log-in')
   toggleMenu()
 }
 

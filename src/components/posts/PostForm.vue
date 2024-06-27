@@ -1,5 +1,5 @@
 <template>
-  <base-dialog id="post-form">
+  <base-dialog>
     <div class="flex items-center mb-4 gap-2">
       <user-avt :avt="props.avt" :id="props.id"></user-avt>
       <span class="font-medium">{{ props.username }}</span>
