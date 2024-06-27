@@ -1,8 +1,5 @@
 <template>
   <div>
-    <notification-popup :show="!!messageContent" @close="clearNotification">
-      <p>{{ messageContent }}</p>
-    </notification-popup>
     <base-dialog :show="isDelete" title="Delete Post" mode="dialog-header" @close="toggleIsDelete">
       <p class="pb-8 text-lg">Do you want to delete this post?</p>
       <template #button>
