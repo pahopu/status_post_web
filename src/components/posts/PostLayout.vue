@@ -33,6 +33,7 @@
           </div>
         </div>
         <div
+          v-if="!isDetail || (isDetail && iconName === 'delete')"
           @click="hiddenOrDelete"
           class="flex items-center justify-center rounded-full w-10 h-10 hover:bg-gray-200 active:opacity-55 cursor-pointer active:scale-95"
         >
@@ -116,13 +117,7 @@ const userrId = computed(() => authStore.userId)
 const isMe = computed(() => props.userId === userrId.value)
 const iconName = computed(() => (isMe.value ? 'delete' : 'close'))
 
-const messageContent = ref('')
-const showNotification = (msg) => {
-  messageContent.value = msg
-}
-const clearNotification = () => {
-  messageContent.value = ''
-}
+const router = useRouter()
 
 const isDelete = ref(false)
 const toggleIsDelete = () => {
@@ -130,8 +125,8 @@ const toggleIsDelete = () => {
 }
 const deletePost = (id) => {
   if (isMe.value) {
+    if (router.currentRoute.value.path === `/feed/${id}`) router.replace('/feed')
     postsStore.deletePost(id)
-    showNotification('Post deleted successfully')
   }
 }
 
@@ -144,7 +139,6 @@ const hiddenOrDelete = () => {
   }
 }
 
-const router = useRouter()
 const goToProfile = () => {
   if (isMe.value) router.replace('/my-profile')
   else router.push(`/profile/${props.userId}`)
