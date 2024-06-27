@@ -1,5 +1,8 @@
 <template>
   <div>
+    <notification-popup :show="!!messageContent" @close="clearNotification">
+      <p>{{ messageContent }}</p>
+    </notification-popup>
     <base-dialog :show="isDelete" title="Delete Post" mode="dialog-header" @close="toggleIsDelete">
       <p class="pb-8 text-lg">Do you want to delete this post?</p>
       <template #button>
@@ -27,7 +30,9 @@
             <h2 class="font-bold hover:underline cursor-pointer" @click="goToProfile">
               {{ props.userName }}
             </h2>
-            <p class="text-gray-500">{{ timeAgo(props.postTime) }}</p>
+            <p class="text-gray-500 cursor-pointer" @click="seeDetail">
+              {{ timeAgo(props.postTime) }}
+            </p>
           </div>
         </div>
         <div
@@ -40,20 +45,6 @@
       <div class="mt-4">
         <p>{{ props.postContent }}</p>
       </div>
-      <!-- <div class="mt-4">
-        <div v-for="comment in props.postComments" :key="comment.id" class="flex items-center">
-          <img
-            :src="comment.userAvt"
-            :alt="comment.userName"
-            class="w-8 h-8 rounded-full hover:brightness-105"
-          />
-          <div class="ml-2">
-            <h3 class="font-bold">{{ comment.userName }}</h3>
-            <p>{{ comment.content }}</p>
-            <p class="text-gray-500">{{ timeAgo(comment.time) }}</p>
-          </div>
-        </div>
-      </div> -->
       <div class="mt-4">
         <img
           v-if="props.postImage"
@@ -63,8 +54,30 @@
         />
       </div>
       <div class="flex items-center justify-between mt-4 select-none">
-        <p class="text-gray-500">{{ props.postComments.length }} comments</p>
-        <button @click="showComments" class="hover:text-blue-600">View Comments</button>
+        <p class="text-gray-500 text-left">{{ props.postComments.length }} comments</p>
+        <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">
+          View Detail
+        </button>
+      </div>
+      <div class="mt-4 border-t border-gray-300" v-if="isDetail">
+        <post-comment-input :postId="props.postId"></post-comment-input>
+        <div v-if="props.postComments.length">
+          <post-comment
+          v-for="comment in props.postComments"
+          :key="comment.id"
+          :commentId="comment.id"
+          :userName="getUser(comment.userId).name"
+          :userAvatar="getUser(comment.userId).avt"
+          :commentContent="comment.content"
+          :commentTime="timeAgo(comment.time)"
+          :currentUserId="userrId"
+          :commentUserId="comment.userId"
+          class="mt-5"
+        ></post-comment>
+        </div>
+        <div v-else>
+          <p class="text-center text-xl font-medium pt-4">No comments yet!</p>
+        </div>
       </div>
     </base-card>
   </div>
@@ -76,9 +89,14 @@ import { useRouter } from 'vue-router'
 
 import { usePostsStore } from '../../stores/posts'
 import { useAuthStore } from '../../stores/auth'
+import { useUsersStore } from '../../stores/users'
+
+import PostComment from '../../components/posts/PostComment.vue'
+import PostCommentInput from '../../components/posts/PostCommentInput.vue'
 
 const authStore = useAuthStore()
 const postsStore = usePostsStore()
+const usersStore = useUsersStore()
 
 const props = defineProps([
   'postId',
@@ -88,12 +106,21 @@ const props = defineProps([
   'userAvatar',
   'postContent',
   'postImage',
-  'postComments'
+  'postComments',
+  'isDetail'
 ])
 
 const userrId = computed(() => authStore.userId)
 const isMe = computed(() => props.userId === userrId.value)
 const iconName = computed(() => (isMe.value ? 'delete' : 'close'))
+
+const messageContent = ref('')
+const showNotification = (msg) => {
+  messageContent.value = msg
+}
+const clearNotification = () => {
+  messageContent.value = ''
+}
 
 const isDelete = ref(false)
 const toggleIsDelete = () => {
@@ -102,6 +129,7 @@ const toggleIsDelete = () => {
 const deletePost = (id) => {
   if (isMe.value) {
     postsStore.deletePost(id)
+    showNotification('Post deleted successfully')
   }
 }
 
@@ -116,8 +144,12 @@ const hiddenOrDelete = () => {
 
 const router = useRouter()
 const goToProfile = () => {
-  if (isMe.value) router.replace('/myprofile')
+  if (isMe.value) router.replace('/my-profile')
   else router.push(`/profile/${props.userId}`)
+}
+
+const seeDetail = () => {
+  router.push(`/feed/${props.postId}`)
 }
 
 const timeAgo = (timeStamp) => {
@@ -149,5 +181,9 @@ const timeAgo = (timeStamp) => {
 
     return `${day}/${month}/${year} at ${hours}:${minutes}`
   }
+}
+
+const getUser = (userId) => {
+  return usersStore.getUserById(userId)
 }
 </script>

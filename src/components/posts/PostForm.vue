@@ -26,8 +26,11 @@
 
 <script setup>
 import { onMounted, nextTick, ref, computed } from 'vue'
+import { usePostsStore } from '../../stores/posts';
 
 import PostImage from './PostImage.vue'
+
+const postsStore = usePostsStore()
 
 const props = defineProps({
   username: String,
@@ -43,7 +46,6 @@ const clearContent = () => {
 const imageUrl = ref(null)
 const getImageUrl = (url) => {
   imageUrl.value = url
-  console.log(imageUrl.value)
 }
 const clearImage = () => {
   imageUrl.value = null
@@ -53,7 +55,7 @@ const emits = defineEmits(['post'])
 const post = () => {
   const img = imageUrl.value ? imageUrl.value : null
   const myPosts = {
-    id: new Date().toISOString(),
+    id: postsStore.currId,
     userId: props.id,
     content: content.value,
     img,
