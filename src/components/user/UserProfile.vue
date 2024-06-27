@@ -27,10 +27,12 @@
         >
         <input
           v-model="formData.name"
+          :class="{ 'border-red-500': errors.name }"
           class="mt-1 block w-full text-lg font-semibold placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
           placeholder="Enter your username"
           :disabled="notCurrentUser"
         />
+        <span v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</span>
 
         <label class="block text-left mt-2 text-lg"
           >Email<span class="text-red-500 select-none"> *</span></label
@@ -47,6 +49,7 @@
         >
         <select
           v-model="formData.gender"
+          :class="{ 'border-red-500': errors.gender }"
           class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
           :disabled="notCurrentUser"
         >
@@ -54,17 +57,20 @@
           <option value="Male">Male</option>
           <option value="Female">Female</option>
         </select>
+        <span v-if="errors.gender" class="text-red-500 text-sm">{{ errors.gender }}</span>
 
         <label class="block text-left mt-2 text-lg"
           >Birthday<span class="text-red-500 select-none"> *</span></label
         >
         <input
           v-model="formData.birthday"
+          :class="{ 'border-red-500': errors.birthday }"
           type="date"
           class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
           placeholder="Select your birthday"
           :disabled="notCurrentUser"
         />
+        <span v-if="errors.birthday" class="text-red-500 text-sm">{{ errors.birthday }}</span>
 
         <label class="block text-left mt-2 text-lg">Birth Place</label>
         <input
@@ -83,43 +89,13 @@
         />
       </div>
 
-      <!-- Change Password -->
-      <div class="mt-6" v-if="changePasswordVisible">
-        <h3 class="text-2xl font-semibold text-gray-700">Change Password</h3>
-
-        <label class="block text-left mt-2 text-lg">Old Password</label>
-        <input
-          v-model="formData.oldPassword"
-          type="password"
-          class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
-          placeholder="Enter your old password"
-        />
-
-        <label class="block text-left mt-2 text-lg">New Password</label>
-        <input
-          v-model="formData.newPassword"
-          type="password"
-          class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
-          placeholder="Enter a new password"
-        />
-
-        <label class="block text-left mt-2 text-lg">Confirm Password</label>
-        <input
-          v-model="formData.confirmPassword"
-          type="password"
-          class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
-          placeholder="Confirm your new password"
-        />
-      </div>
-
       <!-- Change Password Button -->
       <div class="mt-4 flex justify-center" v-if="!notCurrentUser">
-        <button
-          @click="toggleChangePassword"
+        <router-link to="/change-password"
           class="text-blue-500 hover:underline focus:outline-none select-none"
         >
-          {{ changePasswordVisible ? 'Hide Password Change' : 'Change Password' }}
-        </button>
+          Change Password
+        </router-link>
       </div>
 
       <!-- Buttons -->
@@ -142,7 +118,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import { useUsersStore } from '../../stores/users'
 import { useAuthStore } from '../../stores/auth'
@@ -157,19 +133,30 @@ const props = defineProps({
 const usersStore = useUsersStore()
 const authStore = useAuthStore()
 
-const formData = ref({ ...props.user })
-const saveProfile = () => {
-  usersStore.updateUser(props.user.id, formData.value)
+const formData = reactive({ ...props.user })
+const errors = reactive({
+  name: '',
+  gender: '',
+  birthday: ''
+})
+
+const validateForm = () => {
+  errors.name = formData.name ? '' : 'Username is required'
+  errors.gender = formData.gender ? '' : 'Gender is required'
+  errors.birthday = formData.birthday ? '' : 'Birthday is required'
+  return !errors.name && !errors.gender && !errors.birthday
 }
+
+const saveProfile = () => {
+  if (validateForm()) {
+    usersStore.updateUser(props.user.id, formData)
+  }
+}
+
 const cancelChanges = () => {
-  Object.assign(formData.value, props.user)
+  Object.assign(formData, props.user)
 }
 
 const userId = computed(() => authStore.userId)
 const notCurrentUser = computed(() => props.user.id !== userId.value)
-
-const changePasswordVisible = ref(false)
-const toggleChangePassword = () => {
-  changePasswordVisible.value = !changePasswordVisible.value
-}
 </script>
