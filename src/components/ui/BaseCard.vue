@@ -1,7 +1,7 @@
 <template>
   <div
-    class="border shadow-md my-2 mx-auto rounded-xl overflow-hidden"
-    :class="[props.mw, props.padding]"
+    class="border shadow-md my-2 mx-auto rounded-xl"
+    :class="[props.mw, props.padding, props.overflow]"
   >
     <slot></slot>
   </div>
@@ -16,6 +16,10 @@ const props = defineProps({
   padding: {
     type: String,
     default: 'p-4'
+  },
+  overflow: {
+    type: String,
+    default: 'overflow-hidden'
   }
 })
 </script>

@@ -19,7 +19,7 @@
         </div>
       </template>
     </base-dialog>
-    <base-card>
+    <base-card :overflow="null">
       <div class="flex items-center justify-between">
         <div class="flex items-center">
           <user-avt :avt="props.userAvatar" :id="props.userId"></user-avt>
@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="mt-4">
-        <p>{{ props.postContent }}</p>
+        <p class="whitespace-pre-wrap break-words">{{ props.postContent }}</p>
       </div>
       <div class="mt-4">
         <img
@@ -71,6 +71,7 @@
             :userAvatar="getUser(comment.userId).avt"
             :commentContent="comment.content"
             :commentTime="timeAgo(comment.time)"
+            :postUserId="props.userId"
             :currentUserId="userrId"
             :commentUserId="comment.userId"
             @update-comment="updateComment"

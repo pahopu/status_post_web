@@ -31,12 +31,12 @@
     >
       <user-avt :avt="props.userAvatar" :id="props.commentUserId"></user-avt>
       <div :class="{ 'flex-1': isEditing }">
-        <div class="flex space-x-2 items-center justify-center" v-if="!isEditing">
+        <div class="flex items-center justify-center space-x-1" v-if="!isEditing">
           <div class="bg-gray-200 p-4 rounded-2xl">
             <h4 class="font-semibold cursor-pointer w-fit" @click="goToProfile">
               {{ userName }}
             </h4>
-            <p class="whitespace-pre-wrap">{{ editText }}</p>
+            <p class="whitespace-pre-wrap break-all">{{ editText }}</p>
           </div>
           <more-dropdown :show="isDrop">
             <button
@@ -47,6 +47,7 @@
               Edit
             </button>
             <button
+              v-if="isCommentInMyPost || isCurrentUser"
               @click="toggleIsDelete"
               class="block w-full px-5 rounded-md py-2 text-left text-sm text-red-500 hover:bg-gray-100 select-none"
             >
@@ -117,6 +118,10 @@ const props = defineProps({
     type: String,
     required: true
   },
+  postUserId: {
+    type: String,
+    required: true
+  },
   currentUserId: {
     type: String,
     required: true
@@ -132,7 +137,8 @@ const emits = defineEmits(['delete-comment', 'update-comment'])
 const isEditing = ref(false)
 const editText = ref(props.commentContent)
 
-const isCurrentUser = props.currentUserId === props.commentUserId
+const isCurrentUser = computed(() => props.currentUserId === props.commentUserId)
+const isCommentInMyPost = computed(() => props.postUserId === props.currentUserId)
 
 const editComment = () => {
   isEditing.value = true

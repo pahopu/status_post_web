@@ -58,6 +58,7 @@ const post = () => {
     time: new Date().toISOString()
   }
   content.value = ''
+  autoResize()
   emits('comment-post', myComment)
 }
 

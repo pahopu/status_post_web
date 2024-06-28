@@ -1,6 +1,6 @@
 <template>
-  <div class="relative inline-block text-left" v-if="props.show">
-    <button class="flex p-1 rounded-full active:scale-95 hover:bg-gray-100" @click="toggleMenu">
+  <div class="relative inline-block text-left" :class="{'opacity-0': !props.show && !isMenuOpen}">
+    <button class="flex w-9 h-9 items-center justify-center rounded-full active:scale-95 hover:bg-gray-100" @click="toggleMenu">
       <svg-icon name="more-horiz" height="30" width="30"></svg-icon>
     </button>
     <transition name="more-dropdown-opt">
