@@ -64,6 +64,7 @@ const post = () => {
     comments: []
   }
   emits('post', myPosts)
+  autoResize()
   clearContent()
   clearImage()
 }

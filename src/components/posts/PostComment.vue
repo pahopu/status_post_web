@@ -32,7 +32,7 @@
       <user-avt :avt="props.userAvatar" :id="props.commentUserId"></user-avt>
       <div :class="{ 'flex-1': isEditing }">
         <div class="flex items-center justify-center space-x-1" v-if="!isEditing">
-          <div class="bg-gray-200 p-4 rounded-2xl">
+          <div class="bg-gray-200 p-4 rounded-2xl min-w-20">
             <h4 class="font-semibold cursor-pointer w-fit" @click="goToProfile">
               {{ userName }}
             </h4>

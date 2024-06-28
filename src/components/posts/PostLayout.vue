@@ -19,31 +19,33 @@
         </div>
       </template>
     </base-dialog>
-    <base-card :overflow="null">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center">
-          <user-avt :avt="props.userAvatar" :id="props.userId"></user-avt>
-          <div class="ml-4">
-            <h2 class="font-bold hover:underline cursor-pointer" @click="goToProfile">
-              {{ props.userName }}
-            </h2>
-            <p class="text-gray-500 cursor-pointer" @click="seeDetail">
-              {{ timeAgo(props.postTime) }}
-            </p>
+    <base-card :overflow="null" :padding="null">
+      <div class="p-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <user-avt :avt="props.userAvatar" :id="props.userId"></user-avt>
+            <div class="ml-4">
+              <h2 class="font-bold hover:underline cursor-pointer" @click="goToProfile">
+                {{ props.userName }}
+              </h2>
+              <p class="text-gray-500 cursor-pointer" @click="seeDetail">
+                {{ timeAgo(props.postTime) }}
+              </p>
+            </div>
+          </div>
+          <div
+            v-if="!isDetail || (isDetail && iconName === 'delete')"
+            @click="hiddenOrDelete"
+            class="flex items-center justify-center rounded-full w-10 h-10 hover:bg-gray-200 active:opacity-55 cursor-pointer active:scale-95"
+          >
+            <svg-icon :name="iconName" width="30" height="30"></svg-icon>
           </div>
         </div>
-        <div
-          v-if="!isDetail || (isDetail && iconName === 'delete')"
-          @click="hiddenOrDelete"
-          class="flex items-center justify-center rounded-full w-10 h-10 hover:bg-gray-200 active:opacity-55 cursor-pointer active:scale-95"
-        >
-          <svg-icon :name="iconName" width="30" height="30"></svg-icon>
+        <div class="mt-4">
+          <p class="whitespace-pre-wrap break-words">{{ props.postContent }}</p>
         </div>
       </div>
-      <div class="mt-4">
-        <p class="whitespace-pre-wrap break-words">{{ props.postContent }}</p>
-      </div>
-      <div class="mt-4">
+      <div>
         <img
           v-if="props.postImage"
           :src="props.postImage"
@@ -51,36 +53,38 @@
           class="w-full select-none"
         />
       </div>
-      <div class="flex items-center justify-between mt-4 select-none">
-        <p class="text-gray-500 text-left">{{ props.postComments.length }} comments</p>
-        <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">View Detail</button>
-      </div>
-      <div class="mt-4 border-t border-gray-300" v-if="isDetail">
-        <post-comment-input
-          :userAvatar="getUser(userrId).avt"
-          :userId="userrId"
-          :postId="props.postId"
-          @comment-post="addComment"
-        ></post-comment-input>
-        <div v-if="props.postComments.length">
-          <post-comment
-            v-for="comment in props.postComments"
-            :key="comment.id"
-            :commentId="comment.id"
-            :userName="getUser(comment.userId).name"
-            :userAvatar="getUser(comment.userId).avt"
-            :commentContent="comment.content"
-            :commentTime="timeAgo(comment.time)"
-            :postUserId="props.userId"
-            :currentUserId="userrId"
-            :commentUserId="comment.userId"
-            @update-comment="updateComment"
-            @delete-comment="deleteComment"
-            class="mt-5"
-          ></post-comment>
+      <div class="p-4">
+        <div class="flex items-center justify-between select-none">
+          <p class="text-gray-500 text-left">{{ props.postComments.length }} comments</p>
+          <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">View Detail</button>
         </div>
-        <div v-else>
-          <p class="text-center text-xl font-medium pt-4">No comments yet!</p>
+        <div class="mt-4 border-t border-gray-300" v-if="isDetail">
+          <post-comment-input
+            :userAvatar="getUser(userrId).avt"
+            :userId="userrId"
+            :postId="props.postId"
+            @comment-post="addComment"
+          ></post-comment-input>
+          <div v-if="props.postComments.length">
+            <post-comment
+              v-for="comment in props.postComments"
+              :key="comment.id"
+              :commentId="comment.id"
+              :userName="getUser(comment.userId).name"
+              :userAvatar="getUser(comment.userId).avt"
+              :commentContent="comment.content"
+              :commentTime="timeAgo(comment.time)"
+              :postUserId="props.userId"
+              :currentUserId="userrId"
+              :commentUserId="comment.userId"
+              @update-comment="updateComment"
+              @delete-comment="deleteComment"
+              class="mt-5"
+            ></post-comment>
+          </div>
+          <div v-else>
+            <p class="text-center text-xl font-medium pt-4">No comments yet!</p>
+          </div>
         </div>
       </div>
     </base-card>
