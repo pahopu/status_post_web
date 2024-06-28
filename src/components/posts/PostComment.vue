@@ -24,41 +24,52 @@
         </div>
       </template>
     </base-dialog>
-    <div class="comment-item flex space-x-4 mb-4">
+    <div
+      class="comment-item flex space-x-4 mb-4"
+      @mouseover="showDropdown"
+      @mouseleave="hideDropdown"
+    >
       <user-avt :avt="props.userAvatar" :id="props.commentUserId"></user-avt>
-      <div class="flex-1">
-        <div class="bg-gray-200 p-4 rounded-2xl" v-if="!isEditing">
-          <div>
-            <div class="flex justify-between items-center">
-              <h4 class="font-semibold cursor-pointer" @click="goToProfile">
-                {{ userName }}
-              </h4>
-              <div>
-                <button
-                  v-if="isCurrentUser"
-                  @click="editComment"
-                  class="text-blue-500 mr-2 hover:underline select-none"
-                >
-                  Edit
-                </button>
-                <button @click="toggleIsDelete" class="text-red-500 hover:underline select-none">
-                  Delete
-                </button>
-              </div>
-            </div>
-            <p>{{ editText }}</p>
+      <div :class="{ 'flex-1': isEditing }">
+        <div class="flex space-x-2 items-center justify-center" v-if="!isEditing">
+          <div class="bg-gray-200 p-4 rounded-2xl">
+            <h4 class="font-semibold cursor-pointer w-fit" @click="goToProfile">
+              {{ userName }}
+            </h4>
+            <p class="whitespace-pre-wrap">{{ editText }}</p>
           </div>
+          <more-dropdown :show="isDrop">
+            <button
+              v-if="isCurrentUser"
+              @click="editComment"
+              class="text-blue-500 block rounded-md w-full px-5 py-2 text-left text-sm mr-2 hover:bg-gray-100 select-none"
+            >
+              Edit
+            </button>
+            <button
+              @click="toggleIsDelete"
+              class="block w-full px-5 rounded-md py-2 text-left text-sm text-red-500 hover:bg-gray-100 select-none"
+            >
+              Delete
+            </button>
+          </more-dropdown>
         </div>
         <div class="relative" v-else>
           <textarea
-            ref="textarea"
+            ref="textareaRef"
             v-model="editText"
-            class="w-full h-full p-4 rounded-2xl resize-none outline-none bg-gray-200 placeholder:text-gray-500"
+            @input="autoResize"
+            class="w-full h-full p-4 pr-12 rounded-2xl resize-none outline-none bg-gray-200 placeholder:text-gray-500"
             placeholder="Add a comment..."
           ></textarea>
-          <button @click="saveComment" class="absolute right-2 top-1/2 -translate-y-1/2 transform">
+          <button
+            @click="saveComment"
+            :disabled="!editText"
+            class="absolute right-1 bottom-2 disabled:cursor-not-allowed cursor-pointer"
+          >
             <div
-              class="flex items-center justify-center hover:bg-gray-100 cursor-pointer w-10 h-10 rounded-full"
+              class="flex items-center justify-center w-10 h-10 rounded-full"
+              :class="{ 'hover:bg-gray-100': editText }"
             >
               <svg-icon name="send" height="24" width="24"></svg-icon>
             </div>
@@ -80,8 +91,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
+
+import MoreDropdown from '../ui/MoreDropdown.vue'
 
 const props = defineProps({
   commentId: {
@@ -153,6 +166,28 @@ const isDelete = ref(false)
 const toggleIsDelete = () => {
   isDelete.value = !isDelete.value
 }
+
+const isDrop = ref(false)
+const showDropdown = () => {
+  isDrop.value = true
+}
+const hideDropdown = () => {
+  isDrop.value = false
+}
+
+const textareaRef = ref(null)
+const autoResize = async () => {
+  await nextTick()
+  const el = textareaRef.value
+  el.style.height = 'auto'
+  el.style.height = `${el.scrollHeight}px`
+}
+
+onMounted(() => {
+  nextTick(() => {
+    autoResize()
+  })
+})
 </script>
 
 <style scoped>

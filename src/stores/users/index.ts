@@ -10,7 +10,7 @@ export const useUsersStore = defineStore('users', () => {
       birthday: '2002-07-01',
       birthPlace: 'Tan Chau, An Giang, Vietnam',
       currentPlace: 'Ho Chi Minh City, Vietnam',
-      avt: 'src/assets/imgs/Sqrt_Avt.jpg',
+      avt: 'https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-1/392938308_3665412847075897_5900783978140370372_n.jpg?stp=dst-jpg_p160x160&_nc_cat=106&ccb=1-7&_nc_sid=50d2ac&_nc_ohc=tMDGuoqk9D8Q7kNvgG4-079&_nc_ht=scontent.fsgn2-9.fna&oh=00_AYArqhJrfN8TGhESHZsK1ZSv0BCl3QKUrkTeeJyEmFDfiA&oe=6683F812',
       cover: 'src/assets/imgs/Cover.png',
       email: 'hoangphucpham0172@gmail.com'
     },
