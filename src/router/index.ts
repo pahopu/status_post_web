@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '../stores/auth'
 
 const PostsList = () => import('../pages/posts/PostsList.vue')
 const PostDetail = () => import('../pages/posts/PostDetail.vue')
@@ -20,13 +21,24 @@ const router = createRouter({
     { path: '/log-in', component: UserLogin },
     { path: '/sign-up', component: UserSingup },
     { path: '/my-profile', component: MyProfile },
-    { path: '/change-password', component: ChangePassword},
+    { path: '/change-password', component: ChangePassword },
     { path: '/profile/:id', component: OtherProfile, props: true },
     { path: '/:notFound(.*)', component: NotFound }
   ],
   scrollBehavior(_, _2, savedPosition) {
     if (savedPosition) return savedPosition
     return { top: 0, behavior: 'smooth' }
+  }
+})
+
+router.beforeEach((to, _, next) => {
+  const authStore = useAuthStore()
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/log-in')
+  } else if (to.meta.requiresUnauth && authStore.isAuthenticated) {
+    next('/feed')
+  } else {
+    next()
   }
 })
 

@@ -1,7 +1,7 @@
 <template>
   <base-card mw="max-w-lg" padding="p-0">
     <!-- Cover Image -->
-    <div class="h-48 overflow-hidden relative select-none">
+    <div class="h-48 overflow-hidden relative select-none border-b-2">
       <div
         class="absolute inset-0 bg-cover bg-center"
         :style="{ backgroundImage: `url(${formData.cover})` }"
@@ -13,7 +13,7 @@
       <div class="flex justify-center -mt-16 select-none">
         <img
           class="w-32 h-32 rounded-full border-4 border-gray-100 z-10"
-          :src="formData.avt"
+          :src="formData.avt || 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1'"
           alt="Avatar"
         />
       </div>

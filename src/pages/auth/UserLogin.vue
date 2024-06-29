@@ -1,6 +1,15 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <base-dialog :show="!!error" title="An error occured" @close="handleError">
+      <p>{{ error }}</p>
+    </base-dialog>
+    <base-dialog :show="isLoading" title="Login" fixed mode="dialog-header">
+      <div class="flex-col justify-center items-center mt-4">
+        <loading-spinner></loading-spinner>
+        <div class="mt-2 text-center">Login in progress</div>
+      </div>
+    </base-dialog>
+    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-md">
       <h2 class="text-2xl font-bold text-center">Login</h2>
       <form @submit.prevent="login">
         <div class="space-y-4">
@@ -45,19 +54,33 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+
+import { useAuthStore } from '../../stores/auth'
+
+const route = useRoute()
+const router = useRouter()
+
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
+const findError = ref('')
+const isLoading = ref(false)
 
-const router = useRouter()
-
-const login = () => {
-  // Example login logic, replace with actual authentication logic
-  if (email.value === 'user@example.com' && password.value === 'password') {
-    router.push('/feed')
-  } else {
-    alert('Invalid email or password')
+const login = async () => {
+  isLoading.value = true
+  try {
+    await authStore.login(email.value, password.value)
+    const redirectUrl = `/${route.query.redirectUrl || 'feed'}`
+    router.replace(redirectUrl)
+  } catch (error) {
+    findError.value = error.message || 'Failed to authenticate. Check your login data.'
   }
+  isLoading.value = false
+}
+
+const handleError = () => {
+  findError.value = ''
 }
 </script>

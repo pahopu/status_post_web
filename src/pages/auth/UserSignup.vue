@@ -1,6 +1,12 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+    <base-dialog :show="isLoading" title="Sign up" fixed mode="dialog-header">
+      <div class="flex-col justify-center items-center mt-4">
+        <loading-spinner></loading-spinner>
+        <div class="mt-2 text-center">Signup in progress</div>
+      </div>
+    </base-dialog>
+    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-md">
       <h2 class="text-2xl font-bold text-center">Sign Up</h2>
       <form @submit.prevent="signin">
         <div class="space-y-4">

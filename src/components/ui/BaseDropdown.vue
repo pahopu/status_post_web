@@ -9,7 +9,10 @@
       <div class="bg-white rounded-full"></div>
       <img
         class="w-12 h-12 rounded-full active:opacity-80 hover:brightness-105"
-        :src="user.avt"
+        :src="
+          user.avt ||
+          'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1'
+        "
         :alt="`${user.id} avatar`"
       />
     </button>
@@ -53,6 +56,7 @@ const toggleMenu = () => {
 }
 
 const logOut = () => {
+  authStore.logout()
   router.replace('/log-in')
   toggleMenu()
 }

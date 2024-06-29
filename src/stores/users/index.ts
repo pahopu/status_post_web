@@ -69,6 +69,17 @@ export const useUsersStore = defineStore('users', () => {
       avt: 'https://e-cdn-images.dzcdn.net/images/artist/086f50bb1ce0e3033634e5e9c2d75462/500x500-000000-80-0-0.jpg',
       cover: 'src/assets/imgs/Cover.png',
       email: 'johnsmith@gmail.com'
+    },
+    {
+      id: 'Ms7rJFQtfsXhIjP22FG8zOJS4I63',
+      name: 'admin',
+      gender: '',
+      birthday: '',
+      birthPlace: '',
+      currentPlace: '',
+      avt: '',
+      cover: '',
+      email: 'admin@admin.com'
     }
   ])
 

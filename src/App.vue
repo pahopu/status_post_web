@@ -1,6 +1,14 @@
 <script setup>
 import TheHeader from './components/layout/TheHeader.vue'
 import ScrollToTopButton from './components/ui/ScrollToTopButton.vue'
+
+import { onMounted } from 'vue';
+import { useAuthStore } from './stores/auth';
+
+const authStore = useAuthStore();
+onMounted(() => {
+  authStore.tryLogin();
+});
 </script>
 
 <template>

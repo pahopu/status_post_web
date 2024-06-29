@@ -8,7 +8,7 @@
           <svg-icon name="logo" width="150" height="60"></svg-icon>
         </router-link>
       </h1>
-      <ul>
+      <ul v-if="isAuthenticated" class="nav">
         <li>
           <router-link to="/feed">News Feed</router-link>
         </li>
@@ -16,10 +16,27 @@
           <router-link to="/my-posts">My Posts</router-link>
         </li>
       </ul>
-      <base-dropdown></base-dropdown>
+      <base-dropdown v-if="isAuthenticated"></base-dropdown>
+      <ul v-if="!isAuthenticated">
+        <li>
+          <router-link to="/sign-up">Sign up</router-link>
+        </li>
+        <li>
+          <router-link to="/log-in" class="login">Log in</router-link>
+        </li>
+      </ul>
     </nav>
   </header>
 </template>
+
+<script setup>
+import { computed } from 'vue'
+import { useAuthStore } from '../../stores/auth'
+
+const authStore = useAuthStore()
+
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+</script>
 
 <style scoped lang="postcss">
 header a {
@@ -43,7 +60,11 @@ h1 a.router-link-active {
 }
 
 ul {
-  @apply flex justify-center items-center absolute left-1/2 -translate-x-1/2;
+  @apply flex justify-center items-center
+}
+
+.nav {
+  @apply absolute left-1/2 -translate-x-1/2;
 }
 
 li {
