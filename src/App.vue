@@ -2,13 +2,20 @@
 import TheHeader from './components/layout/TheHeader.vue'
 import ScrollToTopButton from './components/ui/ScrollToTopButton.vue'
 
-import { onMounted } from 'vue';
-import { useAuthStore } from './stores/auth';
+import { onMounted } from 'vue'
+import { useAuthStore } from './stores/auth'
+import { useUsersStore } from './stores/users'
 
-const authStore = useAuthStore();
+const authStore = useAuthStore()
+const usersStore = useUsersStore()
+
+const getUsersList = async () => {
+  await usersStore.getUsersList()
+}
 onMounted(() => {
-  authStore.tryLogin();
-});
+  getUsersList()
+  authStore.tryLogin()
+})
 </script>
 
 <template>

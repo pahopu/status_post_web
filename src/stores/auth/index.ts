@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 import { reactive, computed } from 'vue'
 
-import getPayloadFromJWT from '../../utils/decode/decode'
+import { useMutation } from '@vue/apollo-composable'
+import { REGISTER } from '../../api/Register'
+
+import getPayloadFromJWT from '../../utils/decode'
+
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 
@@ -39,27 +43,44 @@ export const useAuthStore = defineStore('auth', () => {
     auth.didAutoLogout = true
   }
 
-  const login = async (email, password) => {
-    const response = await authorization.signInWithEmailAndPassword(email, password)
-    const user = response.user
-
-    const token = await user.getIdToken()
+  const setData = (userId, token) => {
     const expirationDate = new Date(getPayloadFromJWT(token).exp * 1000)
     const expiresIn = expirationDate.getTime() - new Date().getTime()
 
     localStorage.setItem('token', token)
-    localStorage.setItem('userId', user.uid)
-    localStorage.setItem('tokenExpiration', expirationDate.toISOString())
+    localStorage.setItem('userId', userId)
+    localStorage.setItem('token-expiration', expirationDate.toISOString())
 
     timer = setTimeout(autoLogout, expiresIn)
 
-    setUser(user.uid, token)
+    setUser(userId, token)
+  }
+
+  const signup = async (email, password, displayName) => {
+    const variables = {
+      display_name: displayName,
+      email,
+      password
+    }
+    const registerMutation = useMutation(REGISTER)
+    const response = await registerMutation.mutate(variables)
+    const user = response?.data.register
+
+    setData(user.uid, user.access_token)
+  }
+
+  const login = async (email, password) => {
+    const response = await authorization.signInWithEmailAndPassword(email, password)
+    const user = response.user
+    const token = await user.getIdToken()
+
+    setData(user.uid, token)
   }
 
   const tryLogin = () => {
     const token = localStorage.getItem('token')
     const userId = localStorage.getItem('userId')
-    const tokenExpiration = localStorage.getItem('tokenExpiration')
+    const tokenExpiration = localStorage.getItem('token-expiration')
 
     const expiresIn = new Date(tokenExpiration).getTime() - new Date().getTime()
     console.log(expiresIn)
@@ -72,7 +93,7 @@ export const useAuthStore = defineStore('auth', () => {
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('userId')
-    localStorage.removeItem('tokenExpiration')
+    localStorage.removeItem('token-expiration')
 
     clearTimeout(timer)
 
@@ -88,6 +109,7 @@ export const useAuthStore = defineStore('auth', () => {
     userId,
     token,
     isAuthenticated,
+    signup,
     login,
     tryLogin,
     logout,

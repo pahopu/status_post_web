@@ -1,6 +1,12 @@
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 
+import { useQuery } from '@vue/apollo-composable'
+import { GET_LIST_USER } from '../../api/GetListUser'
+
+const defaultImage =
+  'https://scontent.fsgn2-9.fna.fbcdn.net/v/t39.30808-1/392938308_3665412847075897_5900783978140370372_n.jpg?stp=dst-jpg_p160x160&_nc_cat=106&ccb=1-7&_nc_sid=50d2ac&_nc_ohc=tMDGuoqk9D8Q7kNvgG4-079&_nc_ht=scontent.fsgn2-9.fna&oh=00_AYArqhJrfN8TGhESHZsK1ZSv0BCl3QKUrkTeeJyEmFDfiA&oe=6683F812'
+
 export const useUsersStore = defineStore('users', () => {
   const users = reactive([
     {
@@ -83,6 +89,32 @@ export const useUsersStore = defineStore('users', () => {
     }
   ])
 
+  const getUsersList = async () => {
+    const { onResult } = useQuery(GET_LIST_USER)
+    onResult((result) => {
+      const usersList = []
+      const results = result.data.account
+
+      for (const key in results) {
+        const user = {
+          id: results[key].uid,
+          name: results[key].display_name,
+          gender: results[key].gender,
+          birthday: results[key].birthday,
+          birthPlace: results[key].birth_place,
+          currentPlace: results[key].current_place,
+          avt: results[key].avatar_url,
+          cover: defaultImage,
+          email: results[key].email
+        }
+        usersList.push(user)
+      }
+
+      users.push(...usersList)
+      console.log(result)
+    })
+  }
+
   const addUser = (user) => {
     users.push(user)
   }
@@ -100,6 +132,7 @@ export const useUsersStore = defineStore('users', () => {
     users,
     addUser,
     getUserById,
+    getUsersList,
     updateUser
   }
 })

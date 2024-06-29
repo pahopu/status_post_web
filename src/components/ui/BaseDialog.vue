@@ -19,6 +19,7 @@
             </h2>
           </slot>
           <div
+            v-if="!props.fixed"
             @click="tryClose"
             class="flex items-center justify-center rounded-full w-10 h-10 bg-gray-200 hover:brightness-95 active:opacity-55 cursor-pointer active:scale-95"
           >

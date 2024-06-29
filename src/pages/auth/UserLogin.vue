@@ -1,7 +1,12 @@
 <template>
   <div class="flex items-center justify-center min-h-screen bg-gray-100">
-    <base-dialog :show="!!error" title="An error occured" @close="handleError">
-      <p>{{ error }}</p>
+    <base-dialog
+      :show="!!findError"
+      title="An error occured"
+      mode="dialog-header"
+      @close="handleError"
+    >
+      <p class="mt-4">{{ findError }}</p>
     </base-dialog>
     <base-dialog :show="isLoading" title="Login" fixed mode="dialog-header">
       <div class="flex-col justify-center items-center mt-4">
@@ -19,7 +24,6 @@
               id="email"
               type="email"
               v-model="email"
-              required
               class="block w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -29,7 +33,6 @@
               id="password"
               type="password"
               v-model="password"
-              required
               class="block w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
