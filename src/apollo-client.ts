@@ -4,7 +4,8 @@ import { logErrorMessages } from '@vue/apollo-util'
 
 function getHeaders() {
   const headers = {}
-  const token = localStorage.getItem('token')
+  const token =
+    'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJteXN1cGVyU2VjcmV0SXNzIiwic3ViIjoidXNlciIsImF1ZCI6Imhhc3VyYSIsImlhdCI6MTcxOTM5MDA4MCwibmJmIjoxNzE5MzkwMDgwLCJleHAiOjE4MTk0NzY0ODAsImh0dHBzOi8vaGFzdXJhLmlvL2p3dC9jbGFpbXMiOnsieC1oYXN1cmEtZGVmYXVsdC1yb2xlIjoidXNlciIsIngtaGFzdXJhLWFsbG93ZWQtcm9sZXMiOlsidXNlciJdLCJ4LWhhc3VyYS11c2VyLWlkIjoidFRHNHllQXNaeFFYeVNTa2R6SUFEdlhqWEdyMSJ9fQ.gWsCZUaQkTQVW5i77XafpoqXdNdOvTVWOnQKkq6siZw'
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }

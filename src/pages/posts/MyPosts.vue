@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 import { usePostsStore } from '../../stores/posts'
 import { useAuthStore } from '../../stores/auth'

@@ -32,10 +32,17 @@
 <script setup>
 import { computed } from 'vue'
 import { useAuthStore } from '../../stores/auth'
+import { useUsersStore } from '../../stores/users'
 
 const authStore = useAuthStore()
+const usersStore = useUsersStore()
 
-const isAuthenticated = computed(() => authStore.isAuthenticated)
+const userId = computed(() => authStore.userId)
+const getUserById = (userId) => usersStore.getUserById(userId)
+const isInUsersList = computed(() => getUserById(userId.value))
+const isAuth = computed(() => authStore.isAuthenticated)
+
+const isAuthenticated = computed(() => isInUsersList.value && isAuth.value)
 </script>
 
 <style scoped lang="postcss">
@@ -60,7 +67,7 @@ h1 a.router-link-active {
 }
 
 ul {
-  @apply flex justify-center items-center
+  @apply flex justify-center items-center;
 }
 
 .nav {

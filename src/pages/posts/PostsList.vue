@@ -1,6 +1,6 @@
 <template>
   <div class="mt-20">
-    <div v-if="visiblePosts.length">
+    <div v-if="visiblePosts">
       <post-layout
         v-for="post in visiblePosts"
         :key="post.id"
@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { usePostsStore } from '../../stores/posts'
 import { useUsersStore } from '../../stores/users'
 

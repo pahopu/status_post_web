@@ -1,124 +1,90 @@
 import { defineStore } from 'pinia'
-import { reactive, computed } from 'vue'
+import { ref, computed } from 'vue'
+
+import { useQuery } from '@vue/apollo-composable'
+import { GET_POST } from '../../api/GetPost'
 
 export const usePostsStore = defineStore('posts', () => {
-  const posts = reactive([
-    {
-      id: 'p3',
-      userId: 'u1',
-      content:
-        'Had a great time hiking this weekend! The view from the top was breathtaking.\n#nature #hiking',
-      img: 'https://images.pexels.com/photos/868097/pexels-photo-868097.jpeg',
-      time: '2024-06-21T10:30:00+07:00',
-      hidden: false,
-      comments: [
-        {
-          id: 'c3_2',
-          userId: 'u3',
-          content: 'Wow, I wish I could join you next time!',
-          time: '2024-06-21T11:15:00+07:00'
-        },
-        {
-          id: 'c3_1',
-          userId: 'u6',
-          content: 'Looks amazing! Where did you go?',
-          time: '2024-06-21T11:00:00+07:00'
+  const posts = ref([])
+  const currId = computed(() => `p${posts.value.length + 1}`)
+
+  const getPostsList = () => {
+    const { onResult } = useQuery(GET_POST)
+    onResult((result) => {
+      if (result && result.data) {
+        const postsList = []
+        const results = result.data.posts
+
+        for (const key in results) {
+          const comment = results[key].post_comments.map((comment) => {
+            return {
+              id: comment.id,
+              userId: comment.user_id,
+              content: comment.comment,
+              time: comment.create_at
+            }
+          })
+
+          const post = {
+            id: results[key].id,
+            userId: results[key].user_id,
+            content: results[key].post_content,
+            img: results[key].post_image_url,
+            time: results[key].create_at,
+            hidden: false,
+            comments: comment
+          }
+          postsList.push(post)
         }
-      ]
-    },
-    {
-      id: 'p2',
-      userId: 'u2',
-      content:
-        "Just finished reading 'The Great Gatsby'. Such an incredible book! Has anyone else read it?",
-      img: 'https://m.media-amazon.com/images/I/81QuEGw8VPL._SL1500_.jpg',
-      time: '2024-06-17T10:00:00+07:00',
-      hidden: false,
-      comments: [
-        {
-          id: 'c2_1',
-          userId: 'u5',
-          content: "Yes! It's one of my favorites. What did you think of the ending?",
-          time: '2024-06-20T10:30:00+07:00'
-        }
-      ]
-    },
-    {
-      id: 'p1',
-      userId: 'u1',
-      content:
-        'Just tried a new recipe and it turned out delicious! Here is the recipe if anyone is interested.\n#cooking #recipe',
-      img: 'https://media.istockphoto.com/id/479770816/vi/vec-to/mary1.jpg?s=1024x1024&w=is&k=20&c=NX011xiH53VBI60fO7GlXAJXJ5P1NEjInQ8aQeReXYw=',
-      time: '2024-06-10T21:00:00+07:00',
-      hidden: false,
-      comments: [
-        {
-          id: 'c1_3',
-          userId: 'u5',
-          content: 'Yum! I will definitely be making this soon.',
-          time: '2024-06-11T08:00:00+07:00'
-        },
-        {
-          id: 'c1_2',
-          userId: 'u3',
-          content: "Looks delicious! Can't wait to try it.",
-          time: '2024-06-10T23:45:00+07:00'
-        },
-        {
-          id: 'c1_1',
-          userId: 'u2',
-          content: 'I love trying new recipes. Please share the recipe!',
-          time: '2024-06-10T21:30:00+07:00'
-        }
-      ]
-    }
-  ])
-  const currId = computed(() => `p${posts.length + 1}`)
+        posts.value = postsList
+      }
+    })
+  }
 
   const currCommentId = (postId) => {
-    const post = posts.find((post) => post.id === postId)
+    const post = posts.value.find((post) => post.id === postId)
     const commentNumber = post.comments.length + 1
     return `c${postId.slice(1)}_${commentNumber}`
   }
 
   const addPost = (post) => {
-    posts.unshift(post)
+    posts.value.unshift(post)
   }
 
   const deletePost = (postId) => {
-    const index = posts.findIndex((post) => post.id === postId)
-    posts.splice(index, 1)
+    const index = posts.value.findIndex((post) => post.id === postId)
+    posts.value.splice(index, 1)
   }
 
   const togglePost = (postId) => {
-    const post = posts.find((post) => post.id === postId)
+    const post = posts.value.find((post) => post.id === postId)
     post.hidden = !post.hidden
   }
 
   const addComment = (postId, comment) => {
-    const post = posts.find((post) => post.id === postId)
+    const post = posts.value.find((post) => post.id === postId)
     post.comments.unshift(comment)
   }
 
   const updateComment = (postId, commentId, newContent) => {
-    const post = posts.find((post) => post.id === postId)
+    const post = posts.value.find((post) => post.id === postId)
     const comment = post.comments.find((comment) => (comment.id = commentId))
     comment.content = newContent
     console.log(posts)
   }
 
   const deleteComment = (postId, commentId) => {
-    const post = posts.find((post) => post.id === postId)
+    const post = posts.value.find((post) => post.id === postId)
     const index = post.comments.findIndex((comment) => comment.id === commentId)
     post.comments.splice(index, 1)
   }
 
   const getPostsByUserId = (userId) => {
-    return posts.filter((post) => post.userId === userId)
+    return posts.value.filter((post) => post.userId === userId)
   }
 
   const getPost = (postId) => {
-    return posts.find((post) => post.id === postId)
+    return posts.value[postId - 1]
   }
 
   return {
@@ -130,6 +96,7 @@ export const usePostsStore = defineStore('posts', () => {
     addComment,
     getPostsByUserId,
     getPost,
+    getPostsList,
     currCommentId,
     updateComment,
     deleteComment
