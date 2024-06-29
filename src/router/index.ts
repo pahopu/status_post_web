@@ -15,14 +15,14 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', redirect: '/feed' },
-    { path: '/feed', component: PostsList },
-    { path: '/feed/:id', component: PostDetail, props: true },
-    { path: '/my-posts', component: MyPosts },
-    { path: '/log-in', component: UserLogin },
-    { path: '/sign-up', component: UserSingup },
-    { path: '/my-profile', component: MyProfile },
-    { path: '/change-password', component: ChangePassword },
-    { path: '/profile/:id', component: OtherProfile, props: true },
+    { path: '/feed', component: PostsList, meta: { requiresAuth: true } },
+    { path: '/feed/:id', component: PostDetail, props: true, meta: { requiresAuth: true } },
+    { path: '/my-posts', component: MyPosts, meta: { requiresAuth: true } },
+    { path: '/log-in', component: UserLogin, meta: { requiresUnauth: true } },
+    { path: '/sign-up', component: UserSingup, meta: { requiresUnauth: true } },
+    { path: '/my-profile', component: MyProfile, meta: { requiresAuth: true } },
+    { path: '/change-password', component: ChangePassword, meta: { requiresAuth: true } },
+    { path: '/profile/:id', component: OtherProfile, props: true, meta: { requiresAuth: true } },
     { path: '/:notFound(.*)', component: NotFound }
   ],
   scrollBehavior(_, _2, savedPosition) {
