@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 
 import { usePostsStore } from '../../stores/posts'
 import { useUsersStore } from '../../stores/users'
@@ -40,4 +40,9 @@ const getUser = (userId) => {
 const togglePost = (postId) => {
   postsStore.togglePost(postId)
 }
+
+onBeforeMount(() => {
+  usersStore.getUsersList()
+  postsStore.getPostsList()
+})
 </script>

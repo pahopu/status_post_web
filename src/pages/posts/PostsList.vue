@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 import { usePostsStore } from '../../stores/posts'
 import { useUsersStore } from '../../stores/users'
 
@@ -44,5 +44,14 @@ const togglePost = (postId) => {
 
 const visiblePosts = computed(() => {
   return postsStore.posts.filter((post) => !post.hidden)
+})
+
+const loadingData = () => {
+  usersStore.getUsersList()
+  postsStore.getPostsList()
+}
+
+onBeforeMount(() => {
+  loadingData()
 })
 </script>

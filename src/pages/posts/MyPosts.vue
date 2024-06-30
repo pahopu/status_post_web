@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
+import { computed, onBeforeMount } from 'vue'
 
 import { usePostsStore } from '../../stores/posts'
 import { useAuthStore } from '../../stores/auth'
@@ -53,4 +53,9 @@ const myPosts = computed(() => postsStore.getPostsByUserId(userId.value))
 const saveData = (myPost) => {
   postsStore.addPost(myPost)
 }
+
+onBeforeMount(() => {
+  usersStore.getUsersList()
+  postsStore.getPostsList()
+})
 </script>

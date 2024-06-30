@@ -4,23 +4,10 @@ import ScrollToTopButton from './components/ui/ScrollToTopButton.vue'
 
 import { onMounted } from 'vue'
 import { useAuthStore } from './stores/auth'
-import { useUsersStore } from './stores/users'
-import { usePostsStore } from './stores/posts'
 
 const authStore = useAuthStore()
-const usersStore = useUsersStore()
-const postsStore = usePostsStore()
 
-const getUsersList = () => {
-  usersStore.getUsersList()
-}
-
-const getPostsList = () => {
-  postsStore.getPostsList()
-}
 onMounted(() => {
-  getUsersList()
-  getPostsList()
   authStore.tryLogin()
 })
 </script>

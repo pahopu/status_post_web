@@ -13,7 +13,7 @@
       <div class="flex justify-center -mt-16 select-none">
         <img
           class="w-32 h-32 rounded-full border-4 border-gray-100 z-10"
-          :src="formData.avt || 'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1'"
+          :src="formData.avt"
           alt="Avatar"
         />
       </div>
@@ -118,7 +118,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive } from 'vue'
 
 import { useUsersStore } from '../../stores/users'
 import { useAuthStore } from '../../stores/auth'

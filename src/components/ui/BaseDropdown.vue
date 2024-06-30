@@ -9,10 +9,7 @@
       <div class="bg-white rounded-full"></div>
       <img
         class="w-12 h-12 rounded-full active:opacity-80 hover:brightness-105"
-        :src="
-          user.avt ||
-          'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1'
-        "
+        :src="user.avt"
         :alt="`${user.id} avatar`"
       />
     </button>

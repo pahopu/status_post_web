@@ -150,7 +150,7 @@ const goToProfile = () => {
 }
 
 const seeDetail = () => {
-  router.push(`/feed/${String(props.postId)}`)
+  router.push(`/feed/${props.postId}`)
 }
 
 const timeAgo = (timeStamp) => {

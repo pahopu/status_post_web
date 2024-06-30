@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { reactive, computed } from 'vue'
 
 import { useMutation } from '@vue/apollo-composable'
+import { LOGIN } from '../../api/Login'
 import { REGISTER } from '../../api/Register'
 
 import getPayloadFromJWT from '../../utils/decode'
@@ -74,7 +75,17 @@ export const useAuthStore = defineStore('auth', () => {
     const user = response.user
     const token = await user.getIdToken()
 
-    setData(user.uid, token)
+    localStorage.setItem('firebase-token', token)
+    const variables = {
+      email,
+      password
+    }
+
+    const loginMutation = useMutation(LOGIN)
+    const fResponse = await loginMutation.mutate(variables)
+    const fUser = fResponse?.data.login
+
+    setData(fUser.uid, fUser.access_token)
   }
 
   const tryLogin = () => {

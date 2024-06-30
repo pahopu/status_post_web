@@ -5,6 +5,8 @@ import { useQuery } from '@vue/apollo-composable'
 import { GET_LIST_USER } from '../../api/GetListUser'
 
 const defaultImage = 'src/assets/imgs/Cover/.png'
+const avtDefault =
+  'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1'
 
 export const useUsersStore = defineStore('users', () => {
   const users = ref([])
@@ -24,13 +26,12 @@ export const useUsersStore = defineStore('users', () => {
             birthday: results[key].birthday,
             birthPlace: results[key].birth_place,
             currentPlace: results[key].current_place,
-            avt: results[key].avatar_url,
+            avt: results[key].avatar_url !== '""' ? results[key].avatar_url : avtDefault,
             cover: defaultImage,
             email: results[key].email
           }
           usersList.push(user)
         }
-
         users.value = usersList
       }
     })
