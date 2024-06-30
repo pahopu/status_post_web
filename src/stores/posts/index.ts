@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-import { useQuery } from '@vue/apollo-composable'
+import { useQuery, useMutation } from '@vue/apollo-composable'
 import { GET_POST } from '../../api/GetPost'
-import { connectStorageEmulator } from 'firebase/storage'
+import { CREATE_POST } from '../../api/CreatePost'
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref([])
@@ -48,8 +48,14 @@ export const usePostsStore = defineStore('posts', () => {
     return `c${postId.slice(1)}_${commentNumber}`
   }
 
-  const addPost = (post) => {
-    posts.value.unshift(post)
+  const addPost = async (post) => {
+    const variables = {
+      post_content: post.content,
+      post_image_url: post.img
+    }
+    const createPostMutation = useMutation(CREATE_POST)
+    await createPostMutation.mutate(variables)
+    window.location.reload()
   }
 
   const deletePost = (postId) => {
