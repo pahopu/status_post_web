@@ -8,7 +8,7 @@
     >
       <p class="mt-4">{{ findError }}</p>
     </base-dialog>
-    <base-dialog :show="isLoading" title="Sign up" fixed mode="dialog-header">
+    <base-dialog :show="isLoading" title="Sign up..." fixed mode="dialog-header">
       <div class="flex-col justify-center items-center mt-4">
         <loading-spinner></loading-spinner>
         <div class="mt-2 text-center">Signup in progress</div>

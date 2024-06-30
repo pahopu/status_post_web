@@ -4,6 +4,7 @@ import { reactive, computed } from 'vue'
 import { useMutation } from '@vue/apollo-composable'
 import { LOGIN } from '../../api/Login'
 import { REGISTER } from '../../api/Register'
+import { CHANGE_PASSWORD } from '../../api/ChangePassword'
 
 import getPayloadFromJWT from '../../utils/decode'
 
@@ -116,6 +117,15 @@ export const useAuthStore = defineStore('auth', () => {
     setAutoLogout()
   }
 
+  const changePassword = async (old_password, new_password) => {
+    const changePasswordMutation = useMutation(CHANGE_PASSWORD)
+    const message = await changePasswordMutation.mutate({
+      new_password,
+      old_password
+    })
+    console.log(message)
+  }
+
   return {
     userId,
     token,
@@ -124,6 +134,7 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     tryLogin,
     logout,
-    autoLogout
+    autoLogout,
+    changePassword
   }
 })

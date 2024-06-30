@@ -1,4 +1,18 @@
 <template>
+  <base-dialog
+    :show="isComplete"
+    title="Password Changed!"
+    mode="dialog-header"
+    @close="isComplete = false"
+  >
+    <p class="mt-4">You have successfully changed your password!</p>
+  </base-dialog>
+  <base-dialog :show="isLoading" title="Change Password..." fixed mode="dialog-header">
+    <div class="flex-col justify-center items-center mt-4">
+      <loading-spinner></loading-spinner>
+      <div class="mt-2 text-center">Changing Password</div>
+    </div>
+  </base-dialog>
   <base-card mw="max-w-lg" padding="p-6">
     <h3 class="text-2xl font-semibold text-gray-700">Change Password</h3>
 
@@ -6,6 +20,7 @@
     <input
       v-model="formData.oldPassword"
       type="password"
+      @input="errors.oldPassword = ''"
       :class="{ 'border-red-500': errors.oldPassword }"
       class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
       placeholder="Enter your old password"
@@ -16,6 +31,7 @@
     <input
       v-model="formData.newPassword"
       type="password"
+      @input="errors.newPassword = ''"
       :class="{ 'border-red-500': errors.newPassword }"
       class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
       placeholder="Enter a new password"
@@ -26,6 +42,7 @@
     <input
       v-model="formData.confirmPassword"
       type="password"
+      @input="errors.confirmPassword = ''"
       :class="{ 'border-red-500': errors.confirmPassword }"
       class="mt-1 block w-full text-lg placeholder-gray-400 border border-gray-300 rounded-md px-4 py-2 text-black"
       placeholder="Confirm your new password"
@@ -52,7 +69,10 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import { useAuthStore } from '../../stores/auth'
+
+const authStore = useAuthStore()
 
 const formData = reactive({
   oldPassword: '',
@@ -65,6 +85,9 @@ const errors = reactive({
   newPassword: '',
   confirmPassword: ''
 })
+
+const isLoading = ref(false)
+const isComplete = ref(false)
 
 const validateForm = () => {
   errors.oldPassword = formData.oldPassword ? '' : 'Old password is required'
@@ -79,10 +102,14 @@ const validateForm = () => {
   return !errors.oldPassword && !errors.newPassword && !errors.confirmPassword
 }
 
-const changePassword = () => {
+const changePassword = async () => {
+  isLoading.value = true
   if (validateForm()) {
-    // Call the store action to change the password
+    await authStore.changePassword(formData.oldPassword, formData.newPassword)
+    cancelChanges()
   }
+  isLoading.value = false
+  isComplete.value = true
 }
 
 const cancelChanges = () => {

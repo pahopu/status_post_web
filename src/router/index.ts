@@ -23,7 +23,7 @@ const router = createRouter({
     { path: '/my-profile', component: MyProfile, meta: { requiresAuth: true } },
     { path: '/change-password', component: ChangePassword, meta: { requiresAuth: true } },
     { path: '/profile/:id', component: OtherProfile, props: true, meta: { requiresAuth: true } },
-    { path: '/:notFound(.*)', component: NotFound }
+    { path: '/:notFound(.*)', component: NotFound, meta: { requiresAuth: true } }
   ],
   scrollBehavior(_, _2, savedPosition) {
     if (savedPosition) return savedPosition

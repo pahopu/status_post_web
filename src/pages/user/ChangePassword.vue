@@ -10,7 +10,7 @@ import ChangePassword from '../../components/user/ChangePassword.vue'
 
 import { useUsersStore } from '../../stores/users'
 
-usersStore = useUsersStore()
+const usersStore = useUsersStore()
 
 onBeforeMount(() => {
   usersStore.getUsersList()
