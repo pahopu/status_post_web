@@ -3,7 +3,7 @@ import { reactive, computed } from 'vue'
 
 import { useMutation } from '@vue/apollo-composable'
 import { LOGIN } from '../../api/Login'
-import { REGISTER } from '../../Register'
+import { REGISTER } from '../../api/Register'
 
 import getPayloadFromJWT from '../../utils/decode'
 
