@@ -11,6 +11,7 @@ function getHeaders() {
     localStorage.removeItem('firebase-token')
   } else if (token) {
     headers['Authorization'] = `Bearer ${token}`
+    // console.log(headers['Authorization'])
   }
   return headers
 }
