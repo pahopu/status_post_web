@@ -1,11 +1,11 @@
 <template>
   <base-dialog
     :show="isComplete"
-    title="Password Changed!"
+    title="Change Password"
     mode="dialog-header"
     @close="isComplete = false"
   >
-    <p class="mt-4">You have successfully changed your password!</p>
+    <p class="mt-4">{{ message }}</p>
   </base-dialog>
   <base-dialog :show="isLoading" title="Change Password..." fixed mode="dialog-header">
     <div class="flex-col justify-center items-center mt-4">
@@ -88,12 +88,19 @@ const errors = reactive({
 
 const isLoading = ref(false)
 const isComplete = ref(false)
+const message = ref('')
 
 const validateForm = () => {
   errors.oldPassword = formData.oldPassword ? '' : 'Old password is required'
   errors.newPassword = formData.newPassword ? '' : 'New password is required'
   errors.confirmPassword = formData.confirmPassword ? '' : 'Confirm password is required'
 
+  if (formData.newPassword && formData.newPassword.length < 6) {
+    errors.newPassword = 'Password must be at least 6 characters long'
+  }
+  if (formData.oldPassword === formData.newPassword) {
+    errors.newPassword = 'New password must be different from old password'
+  }
   if (formData.newPassword && formData.confirmPassword) {
     errors.confirmPassword =
       formData.newPassword === formData.confirmPassword ? '' : 'Passwords do not match'
@@ -103,11 +110,18 @@ const validateForm = () => {
 }
 
 const changePassword = async () => {
+  if (!validateForm()) return
+
   isLoading.value = true
-  if (validateForm()) {
-    await authStore.changePassword(formData.oldPassword, formData.newPassword)
+
+  const isSuccess = await authStore.changePassword(formData.oldPassword, formData.newPassword)
+  if (isSuccess) {
+    message.value = 'Your password has been changed successfully.'
     cancelChanges()
+  } else {
+    message.value = 'Failed to change password. Please try again.'
   }
+
   isLoading.value = false
   isComplete.value = true
 }

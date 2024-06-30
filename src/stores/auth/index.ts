@@ -119,11 +119,15 @@ export const useAuthStore = defineStore('auth', () => {
 
   const changePassword = async (old_password, new_password) => {
     const changePasswordMutation = useMutation(CHANGE_PASSWORD)
-    const message = await changePasswordMutation.mutate({
-      new_password,
-      old_password
-    })
-    console.log(message)
+    try {
+      await changePasswordMutation.mutate({
+        new_password,
+        old_password
+      })
+      return true
+    } catch (error) {
+      return false
+    }
   }
 
   return {
