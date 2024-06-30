@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { useMutation, useQuery } from '@vue/apollo-composable'
 import { GET_LIST_USER } from '../../api/GetListUser'
 import { UPDATE_PROFILE } from '../../api/UpdateProfile'
+import { UPLOAD_AVT } from '../../api/UploadAvt'
 
 const defaultImage = 'src/assets/imgs/Cover/.png'
 const avtDefault =
@@ -56,6 +57,19 @@ export const useUsersStore = defineStore('users', () => {
       birth_place: updatedData.birthPlace,
       current_place: updatedData.currentPlace
     })
+  }
+
+  const updateAvt = async (userId, avatar) => {
+    const updateAvtMutation = useMutation(UPLOAD_AVT)
+    await updateAvtMutation.mutate({
+      uid: userId,
+      avatar_image: avatar
+    })
+  }
+
+  const updateProfile = async (userId, updatedData) => {
+    await updateUser(userId, updatedData)
+    await updateAvt(userId, updatedData.avt)
     window.location.reload()
   }
 
@@ -64,6 +78,6 @@ export const useUsersStore = defineStore('users', () => {
     addUser,
     getUserById,
     getUsersList,
-    updateUser
+    updateProfile
   }
 })

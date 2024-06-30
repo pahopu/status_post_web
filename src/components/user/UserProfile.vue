@@ -10,12 +10,20 @@
 
     <div class="p-6">
       <!-- Avatar -->
-      <div class="flex justify-center -mt-16 select-none">
+      <div class="flex justify-center -mt-16 select-none relative">
         <img
           class="w-32 h-32 rounded-full border-4 border-gray-100 z-10"
           :src="formData.avt"
           alt="Avatar"
         />
+        <!-- Add an input for changing avatar -->
+        <label
+          v-if="!notCurrentUser"
+          class="absolute bottom-4 left-60 z-20 bg-gray-600 bg-opacity-50 text-white rounded-full p-1 cursor-pointer hover:bg-opacity-80"
+        >
+          <input type="file" accept="image/*" class="hidden" @change="handleAvatarChange" />
+          <svg-icon name="edit"></svg-icon>
+        </label>
       </div>
 
       <!-- User Information -->
@@ -91,7 +99,8 @@
 
       <!-- Change Password Button -->
       <div class="mt-4 flex justify-center" v-if="!notCurrentUser">
-        <router-link to="/change-password"
+        <router-link
+          to="/change-password"
           class="text-blue-500 hover:underline focus:outline-none select-none"
         >
           Change Password
@@ -119,7 +128,6 @@
 
 <script setup>
 import { computed, reactive } from 'vue'
-
 import { useUsersStore } from '../../stores/users'
 import { useAuthStore } from '../../stores/auth'
 
@@ -149,7 +157,7 @@ const validateForm = () => {
 
 const saveProfile = () => {
   if (validateForm()) {
-    usersStore.updateUser(props.user.id, formData)
+    usersStore.updateProfile(props.user.id, formData)
   }
 }
 
@@ -159,4 +167,15 @@ const cancelChanges = () => {
 
 const userId = computed(() => authStore.userId)
 const notCurrentUser = computed(() => props.user.id !== userId.value)
+
+const handleAvatarChange = (event) => {
+  const file = event.target.files[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      formData.avt = e.target.result
+    }
+    reader.readAsDataURL(file)
+  }
+}
 </script>
