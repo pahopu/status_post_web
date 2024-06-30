@@ -2,9 +2,13 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 import { useQuery, useMutation } from '@vue/apollo-composable'
+
 import { GET_POST } from '../../api/GetPost'
 import { CREATE_POST } from '../../api/CreatePost'
 import { DELETE_POST } from '../../api/DeletePost'
+import { ADD_COMMENT } from '../../api/AddComment'
+import { DELETE_COMMENT } from '../../api/DeleteComment'
+import { UPDATE_COMMENT } from '../../api/UpdateComment'
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref([])
@@ -44,7 +48,7 @@ export const usePostsStore = defineStore('posts', () => {
   }
 
   const currCommentId = (postId) => {
-    const post = posts.value.find((post) => post.id === postId)
+    const post = posts.value.find((post) => post.id == postId)
     const commentNumber = post.comments.length + 1
     return `c${postId.slice(1)}_${commentNumber}`
   }
@@ -66,26 +70,31 @@ export const usePostsStore = defineStore('posts', () => {
   }
 
   const togglePost = (postId) => {
-    const post = posts.value.find((post) => post.id === postId)
+    const post = posts.value.find((post) => post.id == postId)
     post.hidden = !post.hidden
   }
 
-  const addComment = (postId, comment) => {
-    const post = posts.value[postId - 1]
-    post.comments.unshift(comment)
+  const addComment = async (postId, comment) => {
+    const addCommentMutation = useMutation(ADD_COMMENT)
+    const response = await addCommentMutation.mutate({
+      user_id: comment.userId,
+      post_id: String(postId),
+      content: comment.content
+    })
+    console.log(response)
+    window.location.reload()
   }
 
-  const updateComment = (postId, commentId, newContent) => {
-    const post = posts.value.find((post) => post.id === postId)
-    const comment = post.comments.find((comment) => (comment.id = commentId))
-    comment.content = newContent
-    console.log(posts)
+  const updateComment = (commentId, newContent) => {
+    const updateCommentMutation = useMutation(UPDATE_COMMENT)
+    updateCommentMutation.mutate({ id: commentId, comment: newContent })
+    window.location.reload()
   }
 
-  const deleteComment = (postId, commentId) => {
-    const post = posts.value.find((post) => post.id === postId)
-    const index = post.comments.findIndex((comment) => comment.id === commentId)
-    post.comments.splice(index, 1)
+  const deleteComment = async (commentId) => {
+    const deleteCommentMutation = useMutation(DELETE_COMMENT)
+    await deleteCommentMutation.mutate({ _eq: commentId })
+    window.location.reload()
   }
 
   const getPostsByUserId = (userId) => {

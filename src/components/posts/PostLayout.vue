@@ -55,8 +55,10 @@
       </div>
       <div class="p-4">
         <div class="flex items-center justify-between select-none">
-          <p class="text-gray-500 text-left">{{ props.postComments.length }} comments</p>
-          <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">View Detail</button>
+          <p class="text-gray-500 text-left">{{ commentNumber }}</p>
+          <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">
+            View Detail
+          </button>
         </div>
         <div class="mt-4 border-t border-gray-300" v-if="isDetail">
           <post-comment-input
@@ -194,10 +196,15 @@ const addComment = (comment) => {
 }
 
 const updateComment = (newComment) => {
-  postsStore.updateComment(props.postId, newComment.id, newComment.content)
+  postsStore.updateComment(newComment.id, newComment.content)
 }
 
 const deleteComment = (commentId) => {
-  postsStore.deleteComment(props.postId, commentId)
+  postsStore.deleteComment(commentId)
 }
+
+const commentNumber = computed(() => {
+  const name = props.postComments.length > 1 ? 'comments' : 'comment'
+  return `${props.postComments.length} ${name}`
+})
 </script>

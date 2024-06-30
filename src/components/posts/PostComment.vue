@@ -59,6 +59,7 @@
           <textarea
             ref="textareaRef"
             v-model="editText"
+            @keydown.enter.prevent="saveComment"
             @input="autoResize"
             class="w-full h-full p-4 pr-12 rounded-2xl resize-none outline-none bg-gray-200 placeholder:text-gray-500"
             placeholder="Add a comment..."

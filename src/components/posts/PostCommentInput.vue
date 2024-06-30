@@ -5,6 +5,7 @@
       <textarea
         ref="textareaRef"
         v-model="content"
+        @keydown.enter.prevent="post"
         @input="autoResize"
         class="w-full h-full p-4 pr-12 rounded-2xl resize-none outline-none bg-gray-200 placeholder:text-gray-500"
         placeholder="Add a comment..."
@@ -52,10 +53,8 @@ const emits = defineEmits(['comment-post'])
 const post = () => {
   if (!content.value) return
   const myComment = {
-    id: postsStore.currCommentId(props.postId),
     userId: props.userId,
-    content: content.value,
-    time: new Date().toISOString()
+    content: content.value
   }
   content.value = ''
   autoResize()
