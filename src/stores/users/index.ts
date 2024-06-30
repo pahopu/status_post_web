@@ -26,7 +26,7 @@ export const useUsersStore = defineStore('users', () => {
             birthday: results[key].birthday,
             birthPlace: results[key].birth_place,
             currentPlace: results[key].current_place,
-            avt: results[key].avatar_url !== '""' ? results[key].avatar_url : avtDefault,
+            avt: results[key].avatar_url || avtDefault,
             cover: defaultImage,
             email: results[key].email
           }

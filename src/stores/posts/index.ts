@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 
 import { useQuery } from '@vue/apollo-composable'
 import { GET_POST } from '../../api/GetPost'
+import { connectStorageEmulator } from 'firebase/storage'
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref([])
@@ -62,7 +63,7 @@ export const usePostsStore = defineStore('posts', () => {
   }
 
   const addComment = (postId, comment) => {
-    const post = posts.value.find((post) => post.id === postId)
+    const post = posts.value[postId - 1]
     post.comments.unshift(comment)
   }
 
@@ -84,7 +85,7 @@ export const usePostsStore = defineStore('posts', () => {
   }
 
   const getPost = (postId) => {
-    return posts.value[postId - 1]
+    return posts.value.find((post) => post.id == postId)
   }
 
   return {

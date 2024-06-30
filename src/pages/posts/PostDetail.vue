@@ -20,7 +20,6 @@ import { computed, onBeforeMount } from 'vue'
 
 import { usePostsStore } from '../../stores/posts'
 import { useUsersStore } from '../../stores/users'
-import { useAuthStore } from '../../stores/auth'
 
 import PostLayout from '../../components/posts/PostLayout.vue'
 
@@ -28,10 +27,8 @@ const props = defineProps(['id'])
 
 const postsStore = usePostsStore()
 const usersStore = useUsersStore()
-const authStore = useAuthStore()
 
 const post = computed(() => postsStore.getPost(props.id))
-const currentUser = computed(() => usersStore.getUserById(authStore.userId))
 
 const getUser = (userId) => {
   return usersStore.getUserById(userId)

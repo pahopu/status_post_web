@@ -5,5 +5,14 @@
 </template>
 
 <script setup>
+import { onBeforeMount } from 'vue'
 import ChangePassword from '../../components/user/ChangePassword.vue'
+
+import { useUsersStore } from '../../stores/users'
+
+usersStore = useUsersStore()
+
+onBeforeMount(() => {
+  usersStore.getUsersList()
+})
 </script>
