@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-import { useQuery } from '@vue/apollo-composable'
+import { useMutation, useQuery } from '@vue/apollo-composable'
 import { GET_LIST_USER } from '../../api/GetListUser'
+import { UPDATE_PROFILE } from '../../api/UpdateProfile'
 
 const defaultImage = 'src/assets/imgs/Cover/.png'
 const avtDefault =
@@ -45,9 +46,17 @@ export const useUsersStore = defineStore('users', () => {
     return users.value.find((user) => user.id === userId)
   }
 
-  const updateUser = (userId, updatedData) => {
-    const user = users.value.find((user) => user.id === userId)
-    Object.assign(user, updatedData)
+  const updateUser = async (userId, updatedData) => {
+    const updateProfileMutation = useMutation(UPDATE_PROFILE)
+    await updateProfileMutation.mutate({
+      uid: userId,
+      display_name: updatedData.name,
+      gender: updatedData.gender,
+      birthday: updatedData.birthday,
+      birth_place: updatedData.birthPlace,
+      current_place: updatedData.currentPlace
+    })
+    window.location.reload()
   }
 
   return {
