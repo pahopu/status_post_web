@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import { GET_POST } from '../../api/GetPost'
 import { CREATE_POST } from '../../api/CreatePost'
+import { DELETE_POST } from '../../api/DeletePost'
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref([])
@@ -58,9 +59,10 @@ export const usePostsStore = defineStore('posts', () => {
     window.location.reload()
   }
 
-  const deletePost = (postId) => {
-    const index = posts.value.findIndex((post) => post.id === postId)
-    posts.value.splice(index, 1)
+  const deletePost = async (postId) => {
+    const deletePostMutation = useMutation(DELETE_POST)
+    await deletePostMutation.mutate({ _eq: postId })
+    window.location.reload()
   }
 
   const togglePost = (postId) => {

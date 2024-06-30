@@ -132,6 +132,7 @@ const deletePost = (id) => {
   if (isMe.value) {
     if (router.currentRoute.value.path === `/feed/${id}`) router.replace('/feed')
     postsStore.deletePost(id)
+    toggleIsDelete()
   }
 }
 
