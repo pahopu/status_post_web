@@ -6,7 +6,8 @@ import { GET_LIST_USER } from '../../api/GetListUser'
 import { UPDATE_PROFILE } from '../../api/UpdateProfile'
 import { UPLOAD_AVT } from '../../api/UploadAvt'
 
-const defaultImage = 'src/assets/imgs/Cover/.png'
+const defaultImage =
+  'https://images.pexels.com/photos/1227511/pexels-photo-1227511.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'
 const avtDefault =
   'https://i0.wp.com/sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png?ssl=1'
 
