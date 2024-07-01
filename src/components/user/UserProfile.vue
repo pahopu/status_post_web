@@ -1,4 +1,13 @@
 <template>
+  <base-dialog :show="isSuccess" title="Update Profile" mode="dialog-header" @close="closeDialog">
+    <p class="mt-4">Profile updated successfully!</p>
+  </base-dialog>
+  <base-dialog :show="isLoading" title="Update Profile..." fixed mode="dialog-header">
+    <div class="flex-col justify-center items-center mt-4">
+      <loading-spinner></loading-spinner>
+      <div class="mt-2 text-center">Updating Profile</div>
+    </div>
+  </base-dialog>
   <base-card mw="max-w-lg" padding="p-0">
     <!-- Cover Image -->
     <div class="h-48 overflow-hidden relative select-none border-b-2">
@@ -111,13 +120,15 @@
       <div class="mt-6 flex justify-center space-x-4" v-if="!notCurrentUser">
         <button
           @click="cancelChanges"
-          class="bg-gray-500 text-white w-24 py-2 rounded-md hover:bg-gray-600 select-none"
+          :disabled="!isFormDataChanged"
+          class="bg-gray-500 text-white w-24 py-2 rounded-md hover:bg-gray-600 select-none disabled:cursor-not-allowed disabled:bg-gray-300"
         >
           Cancel
         </button>
         <button
           @click="saveProfile"
-          class="bg-blue-500 text-white w-24 py-2 rounded-md hover:bg-blue-600 select-none"
+          :disabled="!isFormDataChanged"
+          class="bg-blue-500 text-white w-24 py-2 rounded-md hover:bg-blue-600 select-none disabled:cursor-not-allowed disabled:bg-blue-300"
         >
           Save
         </button>
@@ -127,7 +138,7 @@
 </template>
 
 <script setup>
-import { computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useUsersStore } from '../../stores/users'
 import { useAuthStore } from '../../stores/auth'
 
@@ -141,7 +152,10 @@ const props = defineProps({
 const usersStore = useUsersStore()
 const authStore = useAuthStore()
 
+const isLoading = ref(false)
+const isSuccess = ref(false)
 const formData = reactive({ ...props.user })
+const originalFormData = reactive({ ...props.user }) // Keep track of original data
 const errors = reactive({
   name: '',
   gender: '',
@@ -155,15 +169,30 @@ const validateForm = () => {
   return !errors.name && !errors.gender && !errors.birthday
 }
 
-const saveProfile = () => {
+const saveProfile = async () => {
   if (validateForm()) {
-    usersStore.updateProfile(props.user.id, formData)
+    isLoading.value = true
+    if (formData.avt !== originalFormData.avt) await usersStore.updateAvt(formData.avt)
+    await usersStore.updateUser(formData.id, formData)
+    isLoading.value = false
+    isSuccess.value = true
+    Object.assign(originalFormData, formData) // Update original data after save
   }
 }
 
-const cancelChanges = () => {
-  Object.assign(formData, props.user)
+const closeDialog = () => {
+  isSuccess.value = false
+  window.location.reload()
 }
+
+const cancelChanges = () => {
+  Object.assign(formData, originalFormData) // Reset form data to original
+}
+
+const isFormDataChanged = computed(() => {
+  // Check if any property in formData is different from originalFormData
+  return Object.keys(formData).some((key) => formData[key] !== originalFormData[key])
+})
 
 const userId = computed(() => authStore.userId)
 const notCurrentUser = computed(() => props.user.id !== userId.value)

@@ -60,18 +60,11 @@ export const useUsersStore = defineStore('users', () => {
     })
   }
 
-  const updateAvt = async (userId, avatar) => {
+  const updateAvt = async (avatar) => {
     const updateAvtMutation = useMutation(UPLOAD_AVT)
     await updateAvtMutation.mutate({
-      uid: userId,
       avatar_image: avatar
     })
-  }
-
-  const updateProfile = async (userId, updatedData) => {
-    await updateUser(userId, updatedData)
-    await updateAvt(userId, updatedData.avt)
-    window.location.reload()
   }
 
   return {
@@ -79,6 +72,7 @@ export const useUsersStore = defineStore('users', () => {
     addUser,
     getUserById,
     getUsersList,
-    updateProfile
+    updateUser,
+    updateAvt
   }
 })
