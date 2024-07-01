@@ -31,8 +31,8 @@
     >
       <user-avt :avt="props.userAvatar" :id="props.commentUserId"></user-avt>
       <div :class="{ 'flex-1': isEditing }">
-        <div class="flex items-center justify-center space-x-1" v-if="!isEditing">
-          <div class="bg-gray-200 p-4 rounded-2xl min-w-20">
+        <div class="flex items-center justify-center space-x-2" v-if="!isEditing">
+          <div class="bg-gray-200 p-4 rounded-2xl min-w-20 max-w-lg">
             <h4 class="font-semibold cursor-pointer w-fit" @click="goToProfile">
               {{ userName }}
             </h4>
@@ -59,7 +59,7 @@
           <textarea
             ref="textareaRef"
             v-model="editText"
-            @keydown.enter.prevent="saveComment"
+            @keydown="handleKeydown"
             @input="autoResize"
             class="w-full h-full p-4 pr-12 rounded-2xl resize-none outline-none bg-gray-200 placeholder:text-gray-500"
             placeholder="Add a comment..."
@@ -143,6 +143,7 @@ const isCommentInMyPost = computed(() => props.postUserId === props.currentUserI
 
 const editComment = () => {
   isEditing.value = true
+  autoResize()
 }
 
 const saveComment = () => {
@@ -151,7 +152,6 @@ const saveComment = () => {
     content: editText.value
   })
   isEditing.value = false
-  autoResize()
 }
 
 const cancelEdit = () => {
@@ -189,6 +189,16 @@ const autoResize = async () => {
   const el = textareaRef.value
   el.style.height = 'auto'
   el.style.height = `${el.scrollHeight}px`
+}
+
+const handleKeydown = (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault()
+    saveComment()
+  } else if (event.key === 'Escape') {
+    event.preventDefault()
+    cancelEdit()
+  }
 }
 
 onMounted(() => {
