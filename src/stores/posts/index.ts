@@ -44,6 +44,7 @@ export const usePostsStore = defineStore('posts', () => {
         posts.value = postsList
       }
     })
+    console.log(posts)
   }
 
   const addPost = async (post) => {
@@ -52,14 +53,25 @@ export const usePostsStore = defineStore('posts', () => {
       post_image_url: post.img
     }
     const createPostMutation = useMutation(CREATE_POST)
-    await createPostMutation.mutate(variables)
-    window.location.reload()
+    const message = await createPostMutation.mutate(variables)
+    const postId = message?.data.post_create.message
+    const newPost = {
+      id: postId,
+      userId: post.userId,
+      content: post.content,
+      img: post.img,
+      time: new Date().toISOString(),
+      hidden: false,
+      comments: []
+    }
+    posts.value.unshift(newPost)
   }
 
   const deletePost = async (postId) => {
     const deletePostMutation = useMutation(DELETE_POST)
     await deletePostMutation.mutate({ _eq: postId })
-    window.location.reload()
+    const index = posts.value.findIndex((post) => post.id == postId)
+    posts.value.splice(index, 1)
   }
 
   const togglePost = (postId) => {
@@ -71,22 +83,33 @@ export const usePostsStore = defineStore('posts', () => {
     const addCommentMutation = useMutation(ADD_COMMENT)
     const response = await addCommentMutation.mutate({
       post_id: String(postId),
-      content: comment
+      content: comment.content
     })
-    console.log(response)
-    window.location.reload()
+    const commentId = response?.data.insert_comments.returning[0].id
+    const newComment = {
+      id: commentId,
+      userId: comment.userId,
+      content: comment.content,
+      time: new Date().toISOString()
+    }
+    const post = posts.value.find((post) => post.id == postId)
+    post.comments.unshift(newComment)
   }
 
-  const updateComment = (commentId, newContent) => {
+  const updateComment = async (postId, newComment) => {
     const updateCommentMutation = useMutation(UPDATE_COMMENT)
-    updateCommentMutation.mutate({ id: commentId, comment: newContent })
-    window.location.reload()
+    await updateCommentMutation.mutate({ id: newComment.id, comment: newComment.content })
+    const post = posts.value.find((post) => post.id == postId)
+    const comment = post.comments.find((comment) => comment.id == newComment.id)
+    comment.content = newComment.content
   }
 
-  const deleteComment = async (commentId) => {
+  const deleteComment = async (postId, commentId) => {
     const deleteCommentMutation = useMutation(DELETE_COMMENT)
     await deleteCommentMutation.mutate({ _eq: commentId })
-    window.location.reload()
+    const post = posts.value.find((post) => post.id == postId)
+    const index = post.comments.findIndex((comment) => comment.id == commentId)
+    post.comments.splice(index, 1)
   }
 
   const getPostsByUserId = (userId) => {
@@ -97,12 +120,12 @@ export const usePostsStore = defineStore('posts', () => {
     return posts.value.find((post) => post.id == postId)
   }
 
-  const notHiddentPosts = computed(() => {
+  const notHiddenPosts = computed(() => {
     return posts.value.filter((post) => !post.hidden)
   })
 
   return {
-    notHiddentPosts,
+    notHiddenPosts,
     getPost,
     addPost,
     deletePost,

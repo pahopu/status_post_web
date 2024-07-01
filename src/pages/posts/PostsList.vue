@@ -42,9 +42,7 @@ const togglePost = (postId) => {
   postsStore.togglePost(postId)
 }
 
-const visiblePosts = computed(() => {
-  return postsStore.notHiddentPosts
-})
+const visiblePosts = computed(() => postsStore.notHiddenPosts)
 
 const loadingData = () => {
   usersStore.getUsersList()

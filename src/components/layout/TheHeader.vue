@@ -4,16 +4,16 @@
   >
     <nav class="w-11/12 m-auto flex justify-between items-center">
       <h1 class="flex justify-center items-center">
-        <router-link to="/">
+        <router-link to="/" @click="reload('/feed')">
           <svg-icon name="logo" width="150" height="60"></svg-icon>
         </router-link>
       </h1>
       <ul v-if="isAuthenticated" class="nav">
         <li>
-          <router-link to="/feed">News Feed</router-link>
+          <router-link to="/feed" @click="reload('/feed')">News Feed</router-link>
         </li>
         <li>
-          <router-link to="/my-posts">My Posts</router-link>
+          <router-link to="/my-posts" @click="reload('/my-posts')">My Posts</router-link>
         </li>
       </ul>
       <base-dropdown v-if="isAuthenticated"></base-dropdown>
@@ -31,9 +31,12 @@
 
 <script setup>
 import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../../stores/auth'
 import { useUsersStore } from '../../stores/users'
 
+const route = useRoute()
+const router = useRouter()
 const authStore = useAuthStore()
 const usersStore = useUsersStore()
 
@@ -41,6 +44,12 @@ const userId = computed(() => authStore.userId)
 const getUserById = (userId) => usersStore.getUserById(userId)
 const isInUsersList = computed(() => getUserById(userId.value))
 const isAuth = computed(() => authStore.isAuthenticated)
+
+const reload = (currPath) => {
+  if (route.path === currPath) {
+    router.go()
+  }
+}
 
 const isAuthenticated = computed(() => isInUsersList.value && isAuth.value)
 </script>

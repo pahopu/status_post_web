@@ -55,13 +55,9 @@ const emits = defineEmits(['post'])
 const post = () => {
   const img = imageUrl.value ? imageUrl.value : null
   const myPosts = {
-    id: postsStore.currId,
     userId: props.id,
     content: content.value,
-    img,
-    time: new Date().toISOString(),
-    hidden: false,
-    comments: []
+    img
   }
   emits('post', myPosts)
   autoResize()

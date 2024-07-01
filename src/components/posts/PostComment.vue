@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick} from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreDropdown from '../ui/MoreDropdown.vue'
@@ -141,9 +141,12 @@ const editText = ref(props.commentContent)
 const isCurrentUser = computed(() => props.currentUserId === props.commentUserId)
 const isCommentInMyPost = computed(() => props.postUserId === props.currentUserId)
 
-const editComment = () => {
+const editComment = async () => {
   isEditing.value = true
-  autoResize()
+  await nextTick(() => {
+    autoResize()
+    textareaRef.value.focus()
+  })
 }
 
 const saveComment = () => {

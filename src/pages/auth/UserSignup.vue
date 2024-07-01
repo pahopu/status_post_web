@@ -132,7 +132,7 @@ const signup = async () => {
       const redirectUrl = `/${route.query.redirectUrl || 'feed'}`
       router.replace(redirectUrl)
     } catch (error) {
-      findError.value = error.message || 'Failed to authenticate. Check your login data.'
+      findError.value = error.message || 'Failed to authenticate. Check your signup data.'
     }
     isLoading.value = false
   }

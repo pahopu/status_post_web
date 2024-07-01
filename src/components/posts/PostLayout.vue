@@ -50,10 +50,10 @@
           v-if="props.postImage"
           :src="props.postImage"
           :alt="`${props.userName} img`"
-          class="w-full select-none"
+          class="w-full select-none pb-4"
         />
       </div>
-      <div class="p-4">
+      <div class="px-4 pb-4">
         <div class="flex items-center justify-between select-none">
           <p class="text-gray-500 text-left">{{ commentNumber }}</p>
           <button @click="seeDetail" class="hover:text-blue-600" v-if="!isDetail">
@@ -196,11 +196,11 @@ const addComment = (comment) => {
 }
 
 const updateComment = (newComment) => {
-  postsStore.updateComment(newComment.id, newComment.content)
+  postsStore.updateComment(props.postId, newComment)
 }
 
 const deleteComment = (commentId) => {
-  postsStore.deleteComment(commentId)
+  postsStore.deleteComment(props.postId, commentId)
 }
 
 const commentNumber = computed(() => {

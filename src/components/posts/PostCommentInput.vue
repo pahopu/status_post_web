@@ -49,7 +49,11 @@ const content = ref('')
 const emits = defineEmits(['comment-post'])
 const post = () => {
   if (!content.value) return
-  emits('comment-post', content.value)
+  const comment = {
+    userId: props.userId,
+    content: content.value
+  }
+  emits('comment-post', comment)
   content.value = ''
   autoResize()
 }
