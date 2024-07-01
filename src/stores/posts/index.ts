@@ -12,7 +12,6 @@ import { UPDATE_COMMENT } from '../../api/UpdateComment'
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref([])
-  const currId = computed(() => `p${posts.value.length + 1}`)
 
   const getPostsList = () => {
     const { onResult } = useQuery(GET_POST)
@@ -45,12 +44,6 @@ export const usePostsStore = defineStore('posts', () => {
         posts.value = postsList
       }
     })
-  }
-
-  const currCommentId = (postId) => {
-    const post = posts.value.find((post) => post.id == postId)
-    const commentNumber = post.comments.length + 1
-    return `c${postId.slice(1)}_${commentNumber}`
   }
 
   const addPost = async (post) => {
@@ -104,17 +97,19 @@ export const usePostsStore = defineStore('posts', () => {
     return posts.value.find((post) => post.id == postId)
   }
 
+  const notHiddentPosts = computed(() => {
+    return posts.value.filter((post) => !post.hidden)
+  })
+
   return {
-    posts,
-    currId,
+    notHiddentPosts,
+    getPost,
     addPost,
     deletePost,
     togglePost,
-    addComment,
-    getPostsByUserId,
-    getPost,
     getPostsList,
-    currCommentId,
+    getPostsByUserId,
+    addComment,
     updateComment,
     deleteComment
   }

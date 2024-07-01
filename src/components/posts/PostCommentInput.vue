@@ -5,7 +5,7 @@
       <textarea
         ref="textareaRef"
         v-model="content"
-        @keydown.enter.prevent="post"
+        @keydown="handleKeydown"
         @input="autoResize"
         class="w-full h-full p-4 pr-12 rounded-2xl resize-none outline-none bg-gray-200 placeholder:text-gray-500"
         placeholder="Add a comment..."
@@ -60,6 +60,13 @@ const autoResize = async () => {
   const el = textareaRef.value
   el.style.height = 'auto'
   el.style.height = `${el.scrollHeight}px`
+}
+
+const handleKeydown = (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault()
+    post()
+  }
 }
 
 onMounted(() => {

@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, nextTick} from 'vue'
 import { useRouter } from 'vue-router'
 
 import MoreDropdown from '../ui/MoreDropdown.vue'

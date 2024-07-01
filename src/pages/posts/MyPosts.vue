@@ -50,8 +50,8 @@ const userId = computed(() => authStore.userId)
 const user = computed(() => usersStore.getUserById(userId.value))
 const myPosts = computed(() => postsStore.getPostsByUserId(userId.value))
 
-const saveData = (myPost) => {
-  postsStore.addPost(myPost)
+const saveData = async (myPost) => {
+  await postsStore.addPost(myPost)
 }
 
 onBeforeMount(() => {

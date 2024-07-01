@@ -1,6 +1,6 @@
 <template>
   <div class="mt-20">
-    <div v-if="visiblePosts">
+    <div v-if="visiblePosts.length">
       <post-layout
         v-for="post in visiblePosts"
         :key="post.id"
@@ -43,7 +43,7 @@ const togglePost = (postId) => {
 }
 
 const visiblePosts = computed(() => {
-  return postsStore.posts.filter((post) => !post.hidden)
+  return postsStore.notHiddentPosts
 })
 
 const loadingData = () => {
