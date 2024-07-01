@@ -77,9 +77,8 @@ export const usePostsStore = defineStore('posts', () => {
   const addComment = async (postId, comment) => {
     const addCommentMutation = useMutation(ADD_COMMENT)
     const response = await addCommentMutation.mutate({
-      user_id: comment.userId,
       post_id: String(postId),
-      content: comment.content
+      content: comment
     })
     console.log(response)
     window.location.reload()

@@ -28,9 +28,6 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
-import { usePostsStore } from '../../stores/posts'
-
-const postsStore = usePostsStore()
 
 const props = defineProps({
   userId: {
@@ -52,13 +49,9 @@ const content = ref('')
 const emits = defineEmits(['comment-post'])
 const post = () => {
   if (!content.value) return
-  const myComment = {
-    userId: props.userId,
-    content: content.value
-  }
+  emits('comment-post', content.value)
   content.value = ''
   autoResize()
-  emits('comment-post', myComment)
 }
 
 const textareaRef = ref(null)

@@ -36,7 +36,7 @@
             <h4 class="font-semibold cursor-pointer w-fit" @click="goToProfile">
               {{ userName }}
             </h4>
-            <p class="whitespace-pre-wrap break-all">{{ editText }}</p>
+            <p class="whitespace-pre-wrap break-words">{{ editText }}</p>
           </div>
           <more-dropdown :show="isDrop">
             <button
@@ -151,6 +151,7 @@ const saveComment = () => {
     content: editText.value
   })
   isEditing.value = false
+  autoResize()
 }
 
 const cancelEdit = () => {
