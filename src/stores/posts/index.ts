@@ -12,8 +12,15 @@ import { UPDATE_COMMENT } from '../../api/UpdateComment'
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref([])
+  const lastFetch = ref(null)
+  const shouldUpdate = computed(() => {
+    const now = new Date().getTime()
+    console.log('should update', !lastFetch.value || now - lastFetch.value > 60000)
+    return !lastFetch.value || now - lastFetch.value > 60000
+  })
 
   const getPostsList = () => {
+    if (!shouldUpdate.value) return
     const { onResult } = useQuery(GET_POST)
     onResult((result) => {
       if (result && result.data) {
@@ -44,7 +51,8 @@ export const usePostsStore = defineStore('posts', () => {
         posts.value = postsList
       }
     })
-    console.log(posts)
+    lastFetch.value = new Date().getTime()
+    console.log('fetching posts')
   }
 
   const addPost = async (post) => {
