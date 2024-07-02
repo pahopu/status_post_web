@@ -134,7 +134,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeMount, reactive, ref } from 'vue'
 import { useUsersStore } from '../../stores/users'
 import { useAuthStore } from '../../stores/auth'
 
@@ -202,7 +202,7 @@ const handleAvatarChange = (event) => {
   }
 }
 
-onMounted(() => {
-  console.log(formData, props.user)
+onBeforeMount(() => {
+  usersStore.getUsersList(true)
 })
 </script>

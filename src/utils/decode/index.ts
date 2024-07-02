@@ -1,4 +1,4 @@
-function base64UrlDecode(base64Url) {
+function base64UrlDecode(base64Url: string) {
     // Chuyển đổi Base64URL về Base64
     let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     // Thêm padding '=' nếu cần thiết
@@ -23,7 +23,7 @@ function base64UrlDecode(base64Url) {
     return jsonStr;
 }
 
-function getPayloadFromJWT(jwt) {
+function getPayloadFromJWT(jwt: string) {
     // Tách JWT thành các phần: header, payload, signature
     const parts = jwt.split('.');
     if (parts.length !== 3) {
