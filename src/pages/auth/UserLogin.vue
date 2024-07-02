@@ -81,6 +81,7 @@ const login = async () => {
     findError.value = error.message || 'Failed to authenticate. Check your login data.'
   }
   isLoading.value = false
+  window.location.reload()
 }
 
 const handleError = () => {

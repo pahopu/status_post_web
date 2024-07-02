@@ -26,11 +26,8 @@
 
 <script setup>
 import { onMounted, nextTick, ref, computed } from 'vue'
-import { usePostsStore } from '../../stores/posts';
 
 import PostImage from './PostImage.vue'
-
-const postsStore = usePostsStore()
 
 const props = defineProps({
   username: String,
