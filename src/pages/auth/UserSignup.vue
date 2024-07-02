@@ -136,6 +136,7 @@ const signup = async () => {
     }
     isLoading.value = false
   }
+  window.location.reload()
 }
 
 const handleError = () => {
