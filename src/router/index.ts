@@ -11,6 +11,11 @@ const OtherProfile = () => import('../pages/user/OtherProfile.vue')
 const ChangePassword = () => import('../pages/user/ChangePassword.vue')
 const NotFound = () => import('../pages/NotFound.vue')
 
+const scrollPositions = {
+  '/feed': { left: 0, top: 0 },
+  '/my-posts': { left: 0, top: 0 }
+}
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -25,9 +30,34 @@ const router = createRouter({
     { path: '/profile/:id', component: OtherProfile, props: true, meta: { requiresAuth: true } },
     { path: '/:notFound(.*)', component: NotFound, meta: { requiresAuth: true } }
   ],
-  scrollBehavior(_, _2, savedPosition) {
-    if (savedPosition) return savedPosition
-    return { top: 0, behavior: 'smooth' }
+  scrollBehavior(to, from, savedPosition) {
+    // Handle back/forward navigation
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    // Check if navigating between feed and my-posts
+    const fromFeedOrMyPosts = ['/feed', '/my-posts'].includes(from.path)
+    const toFeedOrMyPosts = ['/feed', '/my-posts'].includes(to.path)
+
+    // Save the current scroll position
+    if (fromFeedOrMyPosts) {
+      scrollPositions[from.path] = { left: window.scrollX, top: window.scrollY }
+    }
+
+    // Restore scroll position if navigating between feed and my-posts
+    if (toFeedOrMyPosts && fromFeedOrMyPosts) {
+      return { ...scrollPositions[to.path] }
+    }
+
+    // Scroll to top if navigating to feed or my-posts from other routes
+    if (toFeedOrMyPosts) {
+      scrollPositions['/my-posts'] = { left: 0, top: 0 }
+      scrollPositions['/feed'] = { left: 0, top: 0 }
+      return { top: 0 }
+    }
+
+    return { top: 0 }
   }
 })
 
