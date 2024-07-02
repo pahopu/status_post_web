@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed} from 'vue'
 
 import UserProfile from '../../components/user/UserProfile.vue'
 
@@ -16,8 +16,4 @@ const authStore = useAuthStore()
 const usersStore = useUsersStore()
 
 const user = computed(() => usersStore.getUserById(authStore.userId))
-
-onBeforeMount(() => {
-  usersStore.getUsersList()
-})
 </script>
