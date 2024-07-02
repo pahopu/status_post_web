@@ -76,7 +76,6 @@ export const useUsersStore = defineStore('users', () => {
       birth_place: updatedData.birthPlace,
       current_place: updatedData.currentPlace
     })
-    const user = getUserById(userId)
   }
 
   const updateAvt = async (userId, avatar) => {
