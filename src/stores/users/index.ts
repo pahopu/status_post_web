@@ -1,7 +1,14 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-import { useMutation, useQuery } from '@vue/apollo-composable'
+import { apolloClient } from '../../apollo-client'
+import { useApolloClient, provideApolloClient } from '@vue/apollo-composable'
+
+provideApolloClient(apolloClient)
+const { resolveClient } = useApolloClient()
+const client = resolveClient()
+
+import { useMutation } from '@vue/apollo-composable'
 import { GET_LIST_USER } from '../../api/GetListUser'
 import { UPDATE_PROFILE } from '../../api/UpdateProfile'
 import { UPLOAD_AVT } from '../../api/UploadAvt'
@@ -13,11 +20,20 @@ const avtDefault =
 
 export const useUsersStore = defineStore('users', () => {
   const users = ref([])
+  const lastFetch = ref(null)
+  const shouldUpdate = computed(() => {
+    const now = new Date().getTime()
+    console.log('should update', !lastFetch.value || now - lastFetch.value > 60000)
+    return !lastFetch.value || now - lastFetch.value > 60000
+  })
 
-  const getUsersList = () => {
-    const { onResult } = useQuery(GET_LIST_USER)
-    onResult((result) => {
-      if (result && result.data) {
+  const getUsersList = async (force = false) => {
+    if (!force && !shouldUpdate.value) return
+    await client
+      .query({
+        query: GET_LIST_USER
+      })
+      .then((result) => {
         const usersList = []
         const results = result.data.account
 
@@ -36,8 +52,10 @@ export const useUsersStore = defineStore('users', () => {
           usersList.push(user)
         }
         users.value = usersList
-      }
-    })
+        lastFetch.value = new Date().getTime()
+      })
+      .catch((error) => console.log(error))
+    console.log('fetching users')
   }
 
   const addUser = (user) => {
@@ -58,9 +76,10 @@ export const useUsersStore = defineStore('users', () => {
       birth_place: updatedData.birthPlace,
       current_place: updatedData.currentPlace
     })
+    const user = getUserById(userId)
   }
 
-  const updateAvt = async (avatar) => {
+  const updateAvt = async (userId, avatar) => {
     const updateAvtMutation = useMutation(UPLOAD_AVT)
     await updateAvtMutation.mutate({
       avatar_image: avatar

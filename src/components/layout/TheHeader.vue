@@ -8,47 +8,56 @@
           <svg-icon name="logo" width="150" height="60"></svg-icon>
         </router-link>
       </h1>
-      <ul v-if="isAuthenticated" class="nav">
-        <li @click="loadingPosts">
-          <router-link to="/feed">News Feed</router-link>
-        </li>
-        <li @click="loadingPosts">
-          <router-link to="/my-posts">My Posts</router-link>
-        </li>
-      </ul>
-      <base-dropdown v-if="isAuthenticated"></base-dropdown>
-      <ul v-if="!isAuthenticated">
-        <li>
-          <router-link to="/sign-up">Sign up</router-link>
-        </li>
-        <li>
-          <router-link to="/log-in" class="login">Log in</router-link>
-        </li>
-      </ul>
+      <div v-if="!isLoading">
+        <div class="flex justify-center items-center" v-if="isAuthenticated">
+          <ul class="nav">
+            <li @click="loadingPosts">
+              <router-link to="/feed">News Feed</router-link>
+            </li>
+            <li @click="loadingPosts">
+              <router-link to="/my-posts">My Posts</router-link>
+            </li>
+          </ul>
+          <base-dropdown></base-dropdown>
+        </div>
+        <ul v-else>
+          <li>
+            <router-link to="/sign-up">Sign up</router-link>
+          </li>
+          <li>
+            <router-link to="/log-in" class="login">Log in</router-link>
+          </li>
+        </ul>
+      </div>
     </nav>
   </header>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 import { useUsersStore } from '../../stores/users'
-import { usePostsStore } from '../../stores/posts'
 
 const authStore = useAuthStore()
-const postsStore = usePostsStore()
 const usersStore = useUsersStore()
 
-const userId = computed(() => authStore.userId)
-const getUserById = (userId) => usersStore.getUserById(userId)
-const isInUsersList = computed(() => getUserById(userId.value))
-const isAuth = computed(() => authStore.isAuthenticated)
+const isLoading = ref(false)
 
+const userId = computed(() => authStore.userId)
+const isAuth = computed(() => authStore.isAuthenticated)
+const isInUsersList = computed(() => getUserById(userId.value))
 const isAuthenticated = computed(() => isInUsersList.value && isAuth.value)
-const loadingPosts = () => {
-  console.log('loading posts')
-  postsStore.getPostsList()
+
+const getUserById = (userId) => usersStore.getUserById(userId)
+const loadingUsers = async () => {
+  isLoading.value = true
+  await usersStore.getUsersList()
+  isLoading.value = false
 }
+
+onMounted(() => {
+  loadingUsers()
+})
 </script>
 
 <style scoped lang="postcss">

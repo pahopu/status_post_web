@@ -68,6 +68,7 @@
             @comment-post="addComment"
           ></post-comment-input>
           <div v-if="props.postComments.length">
+            <loading-spinner class="mt-4" v-if="isLoading"></loading-spinner>
             <post-comment
               v-for="comment in props.postComments"
               :key="comment.id"
@@ -108,6 +109,7 @@ const authStore = useAuthStore()
 const postsStore = usePostsStore()
 const usersStore = useUsersStore()
 
+const isLoading = ref(false)
 const props = defineProps([
   'postId',
   'userId',
@@ -191,16 +193,22 @@ const getUser = (userId) => {
   return usersStore.getUserById(userId)
 }
 
-const addComment = (comment) => {
-  postsStore.addComment(props.postId, comment)
+const addComment = async (comment) => {
+  isLoading.value = true
+  await postsStore.addComment(props.postId, comment)
+  isLoading.value = false
 }
 
-const updateComment = (newComment) => {
-  postsStore.updateComment(props.postId, newComment)
+const updateComment = async (newComment) => {
+  isLoading.value = true
+  await postsStore.updateComment(props.postId, newComment)
+  isLoading.value = false
 }
 
-const deleteComment = (commentId) => {
-  postsStore.deleteComment(props.postId, commentId)
+const deleteComment = async (commentId) => {
+  isLoading.value = true
+  await postsStore.deleteComment(props.postId, commentId)
+  isLoading.value = false
 }
 
 const commentNumber = computed(() => {

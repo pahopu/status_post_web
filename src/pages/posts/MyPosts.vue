@@ -8,7 +8,12 @@
       @save-data="saveData"
     ></post-create>
     <div>
-      <div v-if="myPosts.length">
+      <div v-if="isLoading" class="pt-2">
+        <base-card>
+          <loading-spinner></loading-spinner>
+        </base-card>
+      </div>
+      <div v-else-if="myPosts.length">
         <post-layout
           v-for="post in myPosts"
           :key="post.id"
@@ -33,7 +38,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { usePostsStore } from '../../stores/posts'
 import { useAuthStore } from '../../stores/auth'
@@ -50,12 +55,18 @@ const userId = computed(() => authStore.userId)
 const user = computed(() => usersStore.getUserById(userId.value))
 const myPosts = computed(() => postsStore.getPostsByUserId(userId.value))
 
+const isLoading = ref(false)
+
 const saveData = async (myPost) => {
   await postsStore.addPost(myPost)
 }
+const loadingPosts = async () => {
+  isLoading.value = true
+  await postsStore.getPostsList()
+  isLoading.value = false
+}
 
-onBeforeMount(() => {
-  usersStore.getUsersList()
-  postsStore.getPostsList()
+onMounted(() => {
+  loadingPosts()
 })
 </script>

@@ -1,6 +1,11 @@
 <template>
   <div class="mt-20">
-    <div v-if="visiblePosts.length">
+    <div v-if="isLoading" class="pt-4">
+      <base-card>
+        <loading-spinner></loading-spinner>
+      </base-card>
+    </div>
+    <div v-else-if="visiblePosts.length">
       <post-layout
         v-for="post in visiblePosts"
         :key="post.id"
@@ -25,7 +30,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeMount } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { usePostsStore } from '../../stores/posts'
 import { useUsersStore } from '../../stores/users'
 
@@ -33,6 +38,8 @@ import PostLayout from '../../components/posts/PostLayout.vue'
 
 const postsStore = usePostsStore()
 const usersStore = useUsersStore()
+
+const isLoading = ref(false)
 
 const getUser = (userId) => {
   return usersStore.getUserById(userId)
@@ -44,12 +51,13 @@ const togglePost = (postId) => {
 
 const visiblePosts = computed(() => postsStore.notHiddenPosts)
 
-const loadingData = () => {
-  usersStore.getUsersList()
-  postsStore.getPostsList()
+const loadingPosts = async () => {
+  isLoading.value = true
+  await postsStore.getPostsList()
+  isLoading.value = false
 }
 
-onBeforeMount(() => {
-  loadingData()
+onMounted(() => {
+  loadingPosts()
 })
 </script>

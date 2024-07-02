@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
-import { useQuery, useMutation } from '@vue/apollo-composable'
+import { apolloClient } from '../../apollo-client'
+import { useMutation, useApolloClient, provideApolloClient } from '@vue/apollo-composable'
 
 import { GET_POST } from '../../api/GetPost'
 import { CREATE_POST } from '../../api/CreatePost'
@@ -9,6 +10,10 @@ import { DELETE_POST } from '../../api/DeletePost'
 import { ADD_COMMENT } from '../../api/AddComment'
 import { DELETE_COMMENT } from '../../api/DeleteComment'
 import { UPDATE_COMMENT } from '../../api/UpdateComment'
+
+provideApolloClient(apolloClient)
+const { resolveClient } = useApolloClient()
+const client = resolveClient()
 
 export const usePostsStore = defineStore('posts', () => {
   const posts = ref([])
@@ -19,11 +24,13 @@ export const usePostsStore = defineStore('posts', () => {
     return !lastFetch.value || now - lastFetch.value > 60000
   })
 
-  const getPostsList = () => {
+  const getPostsList = async () => {
     if (!shouldUpdate.value) return
-    const { onResult } = useQuery(GET_POST)
-    onResult((result) => {
-      if (result && result.data) {
+    await client
+      .query({
+        query: GET_POST
+      })
+      .then((result) => {
         const postsList = []
         const results = result.data.posts
 
@@ -49,9 +56,9 @@ export const usePostsStore = defineStore('posts', () => {
           postsList.push(post)
         }
         posts.value = postsList
-      }
-    })
-    lastFetch.value = new Date().getTime()
+        lastFetch.value = new Date().getTime()
+      })
+      .catch((error) => console.log(error))
     console.log('fetching posts')
   }
 
