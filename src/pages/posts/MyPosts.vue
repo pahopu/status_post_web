@@ -58,7 +58,9 @@ const myPosts = computed(() => postsStore.getPostsByUserId(userId.value))
 const isLoading = ref(false)
 
 const saveData = async (myPost) => {
+  isLoading.value = true
   await postsStore.addPost(myPost)
+  isLoading.value = false
 }
 const loadingPosts = async () => {
   isLoading.value = true
